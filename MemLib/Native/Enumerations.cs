@@ -116,7 +116,7 @@ namespace MemLib.Native {
     }
 
     [Flags]
-    public enum UnDecorateFlags {
+    public enum UnDecorateFlags : uint {
         UndNameComplete = 0x0000,
         UndNameNoLeadingUnderscores = 0x0001,
         UndNameNoMsKeywords = 0x0002,

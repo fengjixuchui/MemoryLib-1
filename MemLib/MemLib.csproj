@@ -64,6 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions.cs" />
     <Compile Include="Native\Enumerations.cs" />
     <Compile Include="Native\NativeMethods.cs" />
     <Compile Include="Native\Structures.cs" />

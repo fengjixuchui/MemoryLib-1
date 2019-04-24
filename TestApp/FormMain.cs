@@ -27,7 +27,6 @@ namespace TestApp {
             //proc = Process.GetProcessesByName("notepad++").FirstOrDefault();
             var swTotal = Stopwatch.StartNew();
             using (var mem = new RemoteProcess()) {
-                
             }
             swTotal.Stop();
             Logging.Log($"TotalTime: {swTotal.Elapsed.TotalMilliseconds:N1} ms ({swTotal.Elapsed.Ticks:N1} ticks)");
