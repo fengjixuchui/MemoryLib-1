@@ -22,11 +22,11 @@ namespace TestApp {
 
         private void ButtonTest1_Click(object sender, EventArgs e) {
             Logging.Clear();
-            var proc = Process.GetCurrentProcess();
+            //var proc = Process.GetCurrentProcess();
             //proc = Process.GetProcessesByName("sekiro").FirstOrDefault();
             //proc = Process.GetProcessesByName("notepad++").FirstOrDefault();
             var swTotal = Stopwatch.StartNew();
-            using (var mem = new RemoteProcess("test")) {
+            using (var mem = new RemoteProcess()) {
                 
             }
             swTotal.Stop();

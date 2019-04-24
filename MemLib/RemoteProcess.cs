@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Diagnostics;
-using Microsoft.Win32.SafeHandles;
+using MemLib.Native;
 
 namespace MemLib {
     public class RemoteProcess : IDisposable, IEquatable<RemoteProcess> {
         public Process Native { get; }
-        public SafeProcessHandle SafeHandle => Native.SafeHandle;
         public IntPtr Handle => Native.Handle;
 
         public RemoteProcess() : this(Process.GetCurrentProcess()) { }
         public RemoteProcess(string processName) : this(Utils.FindProcess(processName)) { }
+
         public RemoteProcess(Process process) {
             Native = process ?? throw new ArgumentNullException(nameof(process));
+            NativeMethods.ReadProcessMemory(Handle, Handle, new byte[] {0}, 0, out _);
         }
 
         #region IDisposable
-        
+
         public void Dispose() {
             GC.SuppressFinalize(this);
         }
