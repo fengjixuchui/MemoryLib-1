@@ -76,30 +76,35 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\$(PlatformTarget)\</OutDir>
     <IntDir>$(ProjectDir)obj\$(Configuration)\$(PlatformTarget)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\$(PlatformTarget)\</OutDir>
     <IntDir>$(ProjectDir)obj\$(Configuration)\$(PlatformTarget)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\$(PlatformTarget)\</OutDir>
     <IntDir>$(ProjectDir)obj\$(Configuration)\$(PlatformTarget)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\$(PlatformTarget)\</OutDir>
     <IntDir>$(ProjectDir)obj\$(Configuration)\$(PlatformTarget)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>ASMJIT_EMBED;VC_EXTRALEAN;WIN32_LEAN_AND_MEAN;WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>VC_EXTRALEAN;WIN32_LEAN_AND_MEAN;WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(ProjectDir)libs\$(PlatformTarget)\$(Configuration)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>asmtk.lib;zydis.lib;kernel32.lib;user32.lib;dbghelp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)libs\$(PlatformTarget)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>keystone.lib;zydis.lib;kernel32.lib;user32.lib;dbghelp.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -107,36 +112,39 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>ASMJIT_EMBED;VC_EXTRALEAN;WIN32_LEAN_AND_MEAN;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>VC_EXTRALEAN;WIN32_LEAN_AND_MEAN;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(ProjectDir)libs\$(PlatformTarget)\$(Configuration)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>asmtk.lib;zydis.lib;kernel32.lib;user32.lib;dbghelp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)libs\$(PlatformTarget)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>keystone.lib;zydis.lib;kernel32.lib;user32.lib;dbghelp.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>ASMJIT_EMBED;VC_EXTRALEAN;WIN32_LEAN_AND_MEAN;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>VC_EXTRALEAN;WIN32_LEAN_AND_MEAN;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(ProjectDir)libs\$(PlatformTarget)\$(Configuration)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>asmtk.lib;zydis.lib;kernel32.lib;user32.lib;dbghelp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)libs\$(PlatformTarget)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>keystone.lib;zydis.lib;kernel32.lib;user32.lib;shell32.lib;dbghelp.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>ASMJIT_EMBED;VC_EXTRALEAN;WIN32_LEAN_AND_MEAN;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>VC_EXTRALEAN;WIN32_LEAN_AND_MEAN;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(ProjectDir)libs\$(PlatformTarget)\$(Configuration)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>asmtk.lib;zydis.lib;kernel32.lib;user32.lib;dbghelp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)libs\$(PlatformTarget)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>keystone.lib;zydis.lib;kernel32.lib;user32.lib;shell32.lib;dbghelp.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -145,12 +153,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\AsmTkWrapper.cpp" />
     <ClCompile Include="src\AssemblyInfo.cpp" />
+    <ClCompile Include="src\Keystone\KeystoneEngine.cpp" />
     <ClCompile Include="src\ZydisWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\AsmTkWrapper.h" />
+    <ClInclude Include="src\Keystone\KeystoneEngine.h" />
     <ClInclude Include="src\ZydisWrapper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -65,6 +65,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions.cs" />
+    <Compile Include="Internals\LocalUnmanagedMemory.cs" />
+    <Compile Include="Internals\MarshalType.cs" />
     <Compile Include="Native\Enumerations.cs" />
     <Compile Include="Native\NativeMethods.cs" />
     <Compile Include="Native\Structures.cs" />

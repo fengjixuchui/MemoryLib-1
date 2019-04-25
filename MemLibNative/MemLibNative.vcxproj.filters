@@ -9,6 +9,18 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
+    <Filter Include="Header Files\Keystone">
+      <UniqueIdentifier>{49c20682-f363-416c-9fa7-9bd1fc47f95e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Keystone">
+      <UniqueIdentifier>{a30c9e99-4c50-4e2a-afb0-5d914f468e28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Zydis">
+      <UniqueIdentifier>{6040d0d9-537a-4ea1-88ab-c031de3422f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Zydis">
+      <UniqueIdentifier>{ffccc4a6-b9fe-40a3-8c38-2742e843e747}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AssemblyInfo.cpp">
@@ -17,16 +29,16 @@
     <ClCompile Include="src\ZydisWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AsmTkWrapper.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\Keystone\KeystoneEngine.cpp">
+      <Filter>Source Files\Keystone</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ZydisWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AsmTkWrapper.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\Keystone\KeystoneEngine.h">
+      <Filter>Header Files\Keystone</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
