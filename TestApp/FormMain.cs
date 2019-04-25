@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using MemLib;
+using MemLibNative.Keystone;
 
 namespace TestApp {
     public partial class FormMain : Form {
@@ -20,8 +21,6 @@ namespace TestApp {
         public static string BytesToString(IEnumerable<byte> array, string separator = "") {
             return array == null ? string.Empty : string.Join(separator, array.Select(v => $"{v:X2}"));
         }
-        [Flags]
-        enum test { }
 
         private void ButtonTest1_Click(object sender, EventArgs e) {
             Logging.Clear();
@@ -31,6 +30,12 @@ namespace TestApp {
             var swTotal = Stopwatch.StartNew();
             //using (var mem = new RemoteProcess()) {}
             
+            using (var asm = new KeystoneEngine(KsMode.Mode64)) {
+                if(asm.Assemble("mov rcx,1122334455", out var buffer))
+                    Logging.Log(BytesToString(buffer, " "));
+                else Logging.Log(asm.GetLastErrorString());
+            }
+
             swTotal.Stop();
             Logging.Log($"TotalTime: {swTotal.Elapsed.TotalMilliseconds:N1} ms ({swTotal.Elapsed.Ticks:N1} ticks)");
         }
