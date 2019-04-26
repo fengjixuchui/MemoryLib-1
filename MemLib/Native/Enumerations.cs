@@ -117,23 +117,23 @@ namespace MemLib.Native {
 
     [Flags]
     public enum UnDecorateFlags : uint {
-        UndNameComplete = 0x0000,
-        UndNameNoLeadingUnderscores = 0x0001,
-        UndNameNoMsKeywords = 0x0002,
-        UndNameNoFunctionReturns = 0x0004,
-        UndNameNoAllocationModel = 0x0008,
-        UndNameNoAllocationLanguage = 0x0010,
-        UndNameNoMsThisType = 0x0020,
-        UndNameNoCvThisType = 0x0040,
-        UndNameNoThisType = 0x0060,
-        UndNameNoAccessSpecifiers = 0x0080,
-        UndNameNoThrowSignatures = 0x0100,
-        UndNameNoMemberType = 0x0200,
-        UndNameNoReturnUdtModel = 0x0400,
-        UndName32BitDecode = 0x0800,
-        UndNameNameOnly = 0x1000,
-        UndNameNoArguments = 0x2000,
-        UndNameNoSpecialSyms = 0x4000
+        Complete = 0x0000,
+        NoLeadingUnderscores = 0x0001,
+        NoMsKeywords = 0x0002,
+        NoFunctionReturns = 0x0004,
+        NoAllocationModel = 0x0008,
+        NoAllocationLanguage = 0x0010,
+        NoMsThisType = 0x0020,
+        NoCvThisType = 0x0040,
+        NoThisType = 0x0060,
+        NoAccessSpecifiers = 0x0080,
+        NoThrowSignatures = 0x0100,
+        NoMemberType = 0x0200,
+        NoReturnUdtModel = 0x0400,
+        _32BitDecode = 0x0800,
+        NameOnly = 0x1000,
+        NoArguments = 0x2000,
+        NoSpecialSyms = 0x4000
     }
 
     #endregion

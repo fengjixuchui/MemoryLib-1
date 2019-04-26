@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 
 namespace MemLib.Native {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    [StructLayout(LayoutKind.Sequential)]
     public struct MemoryBasicInformation {
         public readonly IntPtr BaseAddress;
         public readonly IntPtr AllocationBase;
@@ -12,7 +12,7 @@ namespace MemLib.Native {
         public readonly MemoryProtectionFlags Protect;
         public readonly MemoryTypeFlags Type;
     }
-
+    
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct ProcessBasicInformation {
         public readonly IntPtr ExitStatus;
@@ -25,7 +25,7 @@ namespace MemLib.Native {
         public int Size => Marshal.SizeOf(typeof(ProcessBasicInformation));
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    [StructLayout(LayoutKind.Sequential)]
     public struct ThreadBasicInformation {
         public readonly uint ExitStatus;
         public readonly IntPtr TebBaseAdress;
@@ -36,14 +36,14 @@ namespace MemLib.Native {
         public readonly uint BasePriority;
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    [StructLayout(LayoutKind.Sequential)]
     public struct ModuleInfo {
         public readonly IntPtr lpBaseOfDll;
         public readonly IntPtr SizeOfImage;
         public readonly IntPtr EntryPoint;
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    [StructLayout(LayoutKind.Sequential)]
     public struct SystemInfo {
         public ushort ProcessorArchitecture;
         public uint PageSize;

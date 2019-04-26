@@ -5,6 +5,7 @@ using System.Text;
 
 namespace MemLib.Internals {
     [SuppressMessage("ReSharper", "StaticMemberInGenericType")]
+    [SuppressMessage("ReSharper", "SwitchStatementMissingSomeCases")]
     internal static class MarshalType<T> {
         public static bool IsIntPtr { get; }
         public static Type RealType { get; }

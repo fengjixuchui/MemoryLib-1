@@ -5,12 +5,18 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using MemLib.Internals;
+using MemLib.Memory;
+using MemLib.Modules;
 using MemLib.Native;
+using MemLib.Threads;
 
 namespace MemLib {
     public class RemoteProcess : IDisposable, IEquatable<RemoteProcess> {
         public Process Native { get; }
-        public IntPtr Handle => Native.Handle;
+        public SafeMemoryHandle Handle { get; }
+        public IntPtr UnsafeHandle => Handle.DangerousGetHandle();
+
+        public bool IsRunning => Native != null && !Native.HasExited && !Handle.IsClosed && !Handle.IsInvalid;
 
         private bool? m_Is64Bit;
         public bool Is64Bit {
@@ -21,12 +27,25 @@ namespace MemLib {
             }
         }
 
+        private MemoryManager m_Memory;
+        public MemoryManager Memory => m_Memory ?? (m_Memory = new MemoryManager(this));
+        private ModuleManager m_Modules;
+        public ModuleManager Modules => m_Modules ?? (m_Modules = new ModuleManager(this));
+        private ThreadManager m_Threads;
+        public ThreadManager Threads => m_Threads ?? (m_Threads = new ThreadManager(this));
+
+        public RemotePointer this[IntPtr address] => new RemotePointer(this, address);
+        public RemotePointer this[long address] => new RemotePointer(this, new IntPtr(address));
+        public RemoteModule this[string moduleName] => Modules[moduleName];
+
         public RemoteProcess() : this(Process.GetCurrentProcess()) { }
         public RemoteProcess(string processName) : this(Utils.FindProcess(processName)) { }
         public RemoteProcess(int processId) : this(Process.GetProcessById(processId)) { }
 
+        [DebuggerStepThrough]
         public RemoteProcess(Process process) {
             Native = process ?? throw new ArgumentNullException(nameof(process));
+            Handle = NativeMethods.OpenProcess(ProcessAccessFlags.AllAccess, false, process.Id);
         }
 
         #region Read Memory
@@ -121,7 +140,11 @@ namespace MemLib {
         #region Write Memory
 
         public bool WriteBytes(IntPtr address, byte[] buffer) {
-            return NativeMethods.WriteProcessMemory(Handle, address, buffer, buffer.Length, out _);
+            bool result;
+            using (new MemoryProtection(this, address, buffer.LongLength)) {
+                result = NativeMethods.WriteProcessMemory(Handle, address, buffer, buffer.Length, out _);
+            }
+            return result;
         }
 
         public bool Write<T>(IntPtr address, T value) {
@@ -175,12 +198,8 @@ namespace MemLib {
 
         #region IDisposable
 
-        protected bool IsDisposed { get; set;}
-
         public virtual void Dispose() {
-            if (!IsDisposed) {
-                IsDisposed = true;
-            }
+            ((IDisposable)m_Memory)?.Dispose();
             GC.SuppressFinalize(this);
         }
 
