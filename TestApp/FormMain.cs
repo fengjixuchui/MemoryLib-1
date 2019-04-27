@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using System.Windows.Forms;
 using MemLib;
 
@@ -24,26 +23,22 @@ namespace TestApp {
 
         private void ButtonTest1_Click(object sender, EventArgs e) {
             Logging.Clear();
-            //var proc = Process.GetCurrentProcess();
+            var proc = Process.GetCurrentProcess();
             //proc = Process.GetProcessesByName("sekiro").FirstOrDefault();
             //proc = Process.GetProcessesByName("notepad++").FirstOrDefault();
             //proc = Process.GetProcessesByName("ReClass.NET").FirstOrDefault();
             var swTotal = Stopwatch.StartNew();
 
-            //using (var mem = new RemoteProcess(proc)) {}
-
-            var test = GetFunction<TestDelegate2>();
-            test.Invoke("aa", out var testval);
-            //var test = GetFunction<TestDelegate1>();
-            //var testval = test.Invoke(5, 7);
-            Logging.Log($"test={testval}");
+            using (var mem = new RemoteProcess(proc)) {
+                
+            }
 
             swTotal.Stop();
             Logging.Log($"TotalTime: {swTotal.Elapsed.TotalMilliseconds:N1} ms ({swTotal.Elapsed.Ticks:N1} ticks)");
         }
 
         public T GetFunction<T>() where T : class {
-            return (T)(object)this.CreateMethod(typeof(T));
+            return (T)(object)CreateMethod(typeof(T));
         }
         
         public delegate int TestDelegate1(int arg, int arg2);

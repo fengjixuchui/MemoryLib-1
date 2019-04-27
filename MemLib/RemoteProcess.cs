@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using MemLib.Assembly;
 using MemLib.Internals;
 using MemLib.Memory;
 using MemLib.Modules;
@@ -33,6 +34,8 @@ namespace MemLib {
         public ModuleManager Modules => m_Modules ?? (m_Modules = new ModuleManager(this));
         private ThreadManager m_Threads;
         public ThreadManager Threads => m_Threads ?? (m_Threads = new ThreadManager(this));
+        private AssemblyManager m_Assembly;
+        public AssemblyManager Assembly => m_Assembly ?? (m_Assembly = new AssemblyManager(this));
 
         public RemotePointer this[IntPtr address] => new RemotePointer(this, address);
         public RemotePointer this[long address] => new RemotePointer(this, new IntPtr(address));
@@ -200,6 +203,11 @@ namespace MemLib {
 
         public virtual void Dispose() {
             ((IDisposable)m_Memory)?.Dispose();
+            ((IDisposable)m_Modules)?.Dispose();
+            ((IDisposable)m_Threads)?.Dispose();
+            ((IDisposable)m_Assembly)?.Dispose();
+            if(Handle != null && !Handle.IsClosed)
+                Handle.Close();
             GC.SuppressFinalize(this);
         }
 

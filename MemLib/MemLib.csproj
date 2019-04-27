@@ -64,11 +64,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assembly\Assembler.cs" />
+    <Compile Include="Assembly\AssemblerException.cs" />
+    <Compile Include="Assembly\AssemblyManager.cs" />
+    <Compile Include="Assembly\RemoteCall.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Internals\IMarshalledValue.cs" />
     <Compile Include="Internals\LocalUnmanagedMemory.cs" />
     <Compile Include="Internals\MarshalledValue.cs" />
     <Compile Include="Internals\MarshalType.cs" />
+    <Compile Include="Assembly\RemoteFunctionAttribute.cs" />
     <Compile Include="Memory\MemoryHelper.cs" />
     <Compile Include="Memory\MemoryManager.cs" />
     <Compile Include="Memory\MemoryProtection.cs" />
@@ -106,10 +111,10 @@
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="MemLib.cd" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assembly\" />
+    <ProjectReference Include="..\MemLibNative\MemLibNative.vcxproj">
+      <Project>{76e1c951-6df8-438e-8c8b-20f0d22e4f05}</Project>
+      <Name>MemLibNative</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
