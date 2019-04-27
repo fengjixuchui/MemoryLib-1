@@ -44,7 +44,6 @@ namespace MemLib.Threads {
 
         public RemoteThread Create(IntPtr address, dynamic parameter, bool isStarted = true) {
             var marshalledParameter = MarshalValue.Marshal(m_Process, parameter);
-
             ThreadBasicInformation tbi = ThreadHelper.NtQueryInformationThread(
                 ThreadHelper.CreateRemoteThread(m_Process.Handle, address, marshalledParameter.Reference,
                     ThreadCreationFlags.Suspended)
