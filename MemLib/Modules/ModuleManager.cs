@@ -8,18 +8,19 @@ using MemLib.Native;
 namespace MemLib.Modules {
     public sealed class ModuleManager : IDisposable {
         private readonly RemoteProcess m_Process;
-        private readonly HashSet<InjectedModule> m_InjectedModules;
+        private readonly HashSet<InjectedModule> m_InjectedModules = new HashSet<InjectedModule>();
         internal IEnumerable<NativeModule> NativeModules => InternalEnumProcessModules();
 
-        public RemoteModule MainModule { get; }
-        public IEnumerable<RemoteModule> RemoteModules => NativeModules.Select(FetchModule);
+        private RemoteModule m_MainModule;
+
+        public RemoteModule MainModule =>
+            m_MainModule ?? (m_MainModule = FetchModule(m_Process.Native.MainModule.ModuleName));
+        public IEnumerable<RemoteModule> RemoteModules => NativeModules.Select(m => new RemoteModule(m_Process, m));
 
         public RemoteModule this[string moduleName] => FetchModule(moduleName);
 
         internal ModuleManager(RemoteProcess process) {
             m_Process = process;
-            m_InjectedModules = new HashSet<InjectedModule>();
-            MainModule = FetchModule(process.Native.MainModule.ModuleName);
         }
 
         private RemoteModule FetchModule(string moduleName) {
@@ -27,10 +28,6 @@ namespace MemLib.Modules {
                 moduleName += ".dll";
             var nativeMod = NativeModules.FirstOrDefault(m => m.ModuleName.Equals(moduleName, StringComparison.OrdinalIgnoreCase));
             return nativeMod == null ? null : new RemoteModule(m_Process, nativeMod);
-        }
-
-        private RemoteModule FetchModule(NativeModule module) {
-            return new RemoteModule(m_Process, module);
         }
         
         [DebuggerStepThrough]
@@ -65,17 +62,16 @@ namespace MemLib.Modules {
         private static string FindFullPath(string fileName) {
             fileName = Environment.ExpandEnvironmentVariables(fileName);
             if (File.Exists(fileName)) return Path.GetFullPath(fileName);
-            if (Path.GetDirectoryName(fileName) == string.Empty) {
-                foreach (var test in (Environment.GetEnvironmentVariable("PATH") ?? "").Split(';')) {
-                    var path = test.Trim();
-                    if (!string.IsNullOrEmpty(path) && File.Exists(path = Path.Combine(path, fileName)))
-                        return Path.GetFullPath(path);
-                }
+            if (Path.GetDirectoryName(fileName) != string.Empty) return null;
+            foreach (var pathVal in (Environment.GetEnvironmentVariable("PATH") ?? "").Split(';')) {
+                var path = pathVal.Trim();
+                if (!string.IsNullOrEmpty(path) && File.Exists(path = Path.Combine(path, fileName)))
+                    return Path.GetFullPath(path);
             }
             return null;
         }
 
-        internal IEnumerable<NativeModule> InternalEnumProcessModules() {
+        private IEnumerable<NativeModule> InternalEnumProcessModules() {
             var flags = m_Process.Is64Bit ? ListModulesFlags.ListModules64Bit : ListModulesFlags.ListModules32Bit;
             if (!ModuleHelper.EnumProcessModules(m_Process.Handle, out var modHandles, flags))
                 yield break;

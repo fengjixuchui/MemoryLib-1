@@ -12,15 +12,17 @@ namespace MemLib.Assembly {
 
         public string LastError => m_Keystone.GetLastErrorString();
         public bool ThrowOnError { get; set; }
-        public KsSyntax Syntax {
-            get => m_Keystone.Syntax;
-            set => m_Keystone.Syntax = value;
+        public AssemblerSyntax Syntax {
+            get => (AssemblerSyntax)m_Keystone.Syntax;
+            set => m_Keystone.Syntax = (KsSyntax)value;
         }
         
         public Assembler() : this(Environment.Is64BitProcess) { }
 
         public Assembler(bool use64Bit) {
-            m_Keystone = new KeystoneEngine(use64Bit ? KsMode.Mode64 : KsMode.Mode32);
+            m_Keystone = new KeystoneEngine(use64Bit ? KsMode.Mode64 : KsMode.Mode32) {
+                Syntax = KsSyntax.Nasm
+            };
         }
 
         #region Assemble

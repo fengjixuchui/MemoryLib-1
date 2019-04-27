@@ -25,13 +25,25 @@ namespace MemLib.Threads {
             m_Process = proc;
         }
 
+        #region GetThreadById
+
+        public RemoteThread GetThreadById(int id) {
+            var native = NativeThreads.FirstOrDefault(t => t.Id == id);
+            return native == null ? null : new RemoteThread(m_Process, native);
+        }
+
+        #endregion
+
+        #region Create
+
         public RemoteThread Create(IntPtr address, bool isStarted = true) {
             var tbi = ThreadHelper.NtQueryInformationThread(
                 ThreadHelper.CreateRemoteThread(m_Process.Handle, address, IntPtr.Zero, ThreadCreationFlags.Suspended)
             );
 
             ProcessThread nativeThread;
-            do {
+            do
+            {
                 nativeThread = m_Process.Threads.NativeThreads.FirstOrDefault(t => t.Id == tbi.ThreadId.ToInt64());
             } while (nativeThread == null);
 
@@ -44,13 +56,14 @@ namespace MemLib.Threads {
 
         public RemoteThread Create(IntPtr address, dynamic parameter, bool isStarted = true) {
             var marshalledParameter = MarshalValue.Marshal(m_Process, parameter);
+
             ThreadBasicInformation tbi = ThreadHelper.NtQueryInformationThread(
-                ThreadHelper.CreateRemoteThread(m_Process.Handle, address, marshalledParameter.Reference,
-                    ThreadCreationFlags.Suspended)
-            );
+                ThreadHelper.CreateRemoteThread(m_Process.Handle, address, marshalledParameter.Reference, ThreadCreationFlags.Suspended)
+                );
 
             ProcessThread nativeThread;
-            do {
+            do
+            {
                 nativeThread = m_Process.Threads.NativeThreads.FirstOrDefault(t => t.Id == tbi.ThreadId.ToInt64());
             } while (nativeThread == null);
 
@@ -60,6 +73,10 @@ namespace MemLib.Threads {
                 result.Resume();
             return result;
         }
+
+        #endregion
+
+        #region CreateAndJoin
 
         public RemoteThread CreateAndJoin(IntPtr address, dynamic parameter) {
             var ret = Create(address, parameter);
@@ -73,19 +90,28 @@ namespace MemLib.Threads {
             return ret;
         }
 
-        public RemoteThread GetThreadById(int id) {
-            var native = NativeThreads.FirstOrDefault(t => t.Id == id);
-            return native == null ? null : new RemoteThread(m_Process, native);
-        }
+        #endregion
+        
+        #region ResumeAll
 
         public void ResumeAll() {
-            foreach (var thread in RemoteThreads) thread.Resume();
+            foreach (var thread in RemoteThreads) {
+                thread.Resume();
+            }
         }
+
+        #endregion
+
+        #region SuspendAll
 
         public void SuspendAll() {
-            foreach (var thread in RemoteThreads) thread.Suspend();
+            foreach (var thread in RemoteThreads) {
+                thread.Suspend();
+            }
         }
 
+        #endregion
+        
         #region IDisposable
 
         void IDisposable.Dispose() { }

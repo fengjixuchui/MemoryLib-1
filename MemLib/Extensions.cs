@@ -6,11 +6,6 @@ using System.Linq;
 
 namespace MemLib {
     public static class LinqExtensions {
-
-        public static string ToString<T>(this IEnumerable<T> array) where T : struct {
-            return array.ToString(string.Empty);
-        }
-
         public static string ToString<T>(this IEnumerable<T> array, string format, string seperator = null) where T : struct {
             if (array == null)
                 return string.Empty;

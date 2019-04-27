@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text;
+using System.Threading.Tasks;
+using MemLib.Assembly;
 using MemLib.Native;
 
 namespace MemLib.Memory {
@@ -18,7 +20,7 @@ namespace MemLib.Memory {
         public MemoryProtection ChangeProtection(int size, MemoryProtectionFlags protection = MemoryProtectionFlags.ExecuteReadWrite, bool mustBeDisposed = true) {
             return new MemoryProtection(m_Process, BaseAddress, size, protection, mustBeDisposed);
         }
-
+        
         #region ReadMemory
 
         public T Read<T>(int offset) {
@@ -79,6 +81,62 @@ namespace MemLib.Memory {
 
         #endregion
 
+        #region Execute
+
+        public T Execute<T>() {
+            return m_Process.Assembly.Execute<T>(BaseAddress);
+        }
+        
+        public IntPtr Execute() {
+            return Execute<IntPtr>();
+        }
+        
+        public T Execute<T>(dynamic parameter) {
+            return m_Process.Assembly.Execute<T>(BaseAddress, parameter);
+        }
+        
+        public IntPtr Execute(dynamic parameter) {
+            return Execute<IntPtr>(parameter);
+        }
+
+        public T Execute<T>(CallingConvention callingConvention, params dynamic[] parameters) {
+            return m_Process.Assembly.Execute<T>(BaseAddress, callingConvention, parameters);
+        }
+
+        public IntPtr Execute(CallingConvention callingConvention, params dynamic[] parameters) {
+            return Execute<IntPtr>(callingConvention, parameters);
+        }
+
+        #endregion
+
+        #region ExecuteAsync
+
+        public Task<T> ExecuteAsync<T>() {
+            return m_Process.Assembly.ExecuteAsync<T>(BaseAddress);
+        }
+        
+        public Task<IntPtr> ExecuteAsync() {
+            return ExecuteAsync<IntPtr>();
+        }
+        
+        public Task<T> ExecuteAsync<T>(dynamic parameter) {
+            return m_Process.Assembly.ExecuteAsync<T>(BaseAddress, parameter);
+        }
+        
+        public Task<IntPtr> ExecuteAsync(dynamic parameter) {
+            return ExecuteAsync<IntPtr>(parameter);
+        }
+
+        public Task<T> ExecuteAsync<T>(CallingConvention callingConvention, params dynamic[] parameters) {
+            return m_Process.Assembly.ExecuteAsync<T>(BaseAddress, callingConvention, parameters);
+        }
+
+        public Task<IntPtr> ExecuteAsync(CallingConvention callingConvention, params dynamic[] parameters) {
+            return ExecuteAsync<IntPtr>(callingConvention, parameters);
+        }
+
+        #endregion
+        
         #region Equality members
 
         public bool Equals(RemotePointer other) {
