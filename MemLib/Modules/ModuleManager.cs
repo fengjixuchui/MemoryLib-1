@@ -98,10 +98,6 @@ namespace MemLib.Modules {
             foreach (var module in m_InjectedModules.Where(m => m.MustBeDisposed).ToList()) {
                 module.Dispose();
             }
-            foreach (var cachedFunction in RemoteModule.CachedFunctions.ToArray()) {
-                if (cachedFunction.Key.Item2 == m_Process.Handle)
-                    RemoteModule.CachedFunctions.Remove(cachedFunction);
-            }
             GC.SuppressFinalize(this);
         }
 

@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using MemLib.Memory;
-using MemLib.Native;
 using MemLib.PeHeader;
 
 namespace MemLib.Modules {
     public class RemoteModule : RemoteRegion {
-        internal static readonly IDictionary<Tuple<string, SafeMemoryHandle>, RemoteFunction> CachedFunctions = new Dictionary<Tuple<string, SafeMemoryHandle>, RemoteFunction>();
-
         public NativeModule Native { get; }
         public PeHeaderParser PeHeader { get; }
         public string Name => Native.ModuleName;
@@ -37,12 +34,7 @@ namespace MemLib.Modules {
         }
 
         private RemoteFunction FindFunction(string functionName) {
-            var tuple = Tuple.Create(functionName, m_Process.Handle);
-            if (CachedFunctions.ContainsKey(tuple))
-                return CachedFunctions[tuple];
             var function = Exports.FirstOrDefault(f => f.Name == functionName || f.UndecoratedName == functionName);
-            if(function != null)
-                CachedFunctions.Add(tuple, function);
             return function;
         }
         

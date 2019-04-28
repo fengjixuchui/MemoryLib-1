@@ -6,5 +6,6 @@ namespace MemLib.Internals {
         RemoteAllocation Allocated { get; }
         IntPtr Reference { get; }
         Type Type { get; }
+        bool IsByRef { get; }
     }
 }

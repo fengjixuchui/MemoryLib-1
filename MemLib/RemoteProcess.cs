@@ -75,7 +75,7 @@ namespace MemLib {
         }
 
         public bool Read<T>(IntPtr address, out T value) {
-            if (ReadBytes(address, out var buffer, MarshalType<T>.Size)) {
+            if (ReadBytes(address, out var buffer, Marshal.SizeOf<T>())) {
                 value = MarshalType<T>.ByteArrayToObject(buffer);
                 return true;
             }

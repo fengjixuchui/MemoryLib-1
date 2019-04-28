@@ -42,11 +42,11 @@ namespace TestApp {
                 var func = gen.GetFunction<TestReturnValue>();
                 Logging.Log($"{func?.Invoke(0, 123)}");
 
-                var func2 = gen.GetFunction<TestOutParam>();
-                var test = 1;
-                func2?.Invoke(ref test);
-                Logging.Log($"{test}");
-                //for (var i = 1; i < 11; i++) func?.Invoke(0, i);
+                //var func2 = gen.GetFunction<TestOutParam>();
+                //var test = 1;
+                //func2?.Invoke(ref test);
+                //Logging.Log($"{test}");
+                for (var i = 1; i < 11; i++) Logging.Log($"{func?.Invoke(0, i)}");;
             }
 
             swTotal.Stop();
