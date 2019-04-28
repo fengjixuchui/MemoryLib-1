@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using MemLib.Internals;
 using MemLib.Native;
 
 namespace MemLib.Memory {
+    [DebuggerStepThrough]
     internal static class MemoryHelper {
         public static IntPtr Allocate(SafeMemoryHandle handle, long size,
             MemoryProtectionFlags protectionFlags = MemoryProtectionFlags.ExecuteReadWrite,

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using MemLib.Internals;
 using MemLib.Native;
 
 namespace MemLib.Threads {
+    [DebuggerStepThrough]
     public static class ThreadHelper {
         public static SafeMemoryHandle OpenThread(ThreadAccessFlags accessFlags, int threadId) {
             var handle = NativeMethods.OpenThread(accessFlags, false, threadId);

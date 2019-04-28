@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using MemLib.Assembly.CallingConventions;
 using MemLib.Internals;
 
-namespace MemLib.Assembly {
+namespace MemLib.Assembly.CallingConventions {
     internal static class CallingConventionSelector {
         [DebuggerStepThrough]
         public static ICallingConvention Get(CallingConvention callingConvention) {

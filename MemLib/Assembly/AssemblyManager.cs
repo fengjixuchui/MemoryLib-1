@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MemLib.Assembly.CallingConventions;
 using MemLib.Internals;
 using MemLib.Memory;
 
@@ -68,7 +69,7 @@ namespace MemLib.Assembly {
         public IntPtr Execute(IntPtr address, CallingConvention callingConvention, params dynamic[] parameters) {
             return Execute<IntPtr>(address, callingConvention, parameters);
         }
-
+        
         #endregion
 
         #region ExecuteAsync

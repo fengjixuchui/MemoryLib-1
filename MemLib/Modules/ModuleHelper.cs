@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using MemLib.Internals;
 using MemLib.Native;
 
 namespace MemLib.Modules {
+    [DebuggerStepThrough]
     public static class ModuleHelper {
         public static string GetModuleFileName(SafeMemoryHandle hProcess, IntPtr hModule) {
             var sb = new StringBuilder(260);

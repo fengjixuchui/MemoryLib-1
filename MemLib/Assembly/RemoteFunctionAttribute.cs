@@ -21,9 +21,9 @@ namespace MemLib.Assembly {
 
         internal string DllName;
         internal string EntryPoint;
-        internal IntPtr RemoteAddress;
+        internal IntPtr RemoteAddress = IntPtr.Zero;
 
-        public CallingConvention CallingConvention;
-        public CharSet CharSet;
+        public CallingConvention CallingConvention = CallingConvention.Default;
+        public CharSet CharSet = CharSet.Ansi;
     }
 }

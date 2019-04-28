@@ -131,5 +131,8 @@ namespace MemLib.Internals {
                 : process.Read<byte>(pointer, Size));
         }
 
+        public static T PtrToRefObject(RemoteProcess process, IntPtr pointer) {
+            return ByteArrayToObject(process.Read<byte>(pointer, Size));
+        }
     }
 }

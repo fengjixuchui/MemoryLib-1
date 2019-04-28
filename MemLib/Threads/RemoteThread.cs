@@ -88,9 +88,9 @@ namespace MemLib.Threads {
         #region IDisposable
 
         public void Dispose() {
-            if(!Handle.IsClosed) 
+            if (!Handle.IsClosed)
                 Handle.Close();
-            if (_parameter != null) {
+            if (_parameter != null && m_Process.IsRunning) {
                 _parameterCleaner.Dispose();
                 _parameter.Dispose();
             }

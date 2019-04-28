@@ -68,14 +68,15 @@
     <Compile Include="Assembly\AssemblerException.cs" />
     <Compile Include="Assembly\AssemblyManager.cs" />
     <Compile Include="Assembly\AssemblyTransaction.cs" />
-    <Compile Include="Assembly\CallingConventionSelector.cs" />
+    <Compile Include="Assembly\CallingConventions\CallingConventionSelector.cs" />
     <Compile Include="Assembly\CallingConventions\CdeclCallingConvention.cs" />
     <Compile Include="Assembly\CallingConventions\FastcallCallingConvention.cs" />
     <Compile Include="Assembly\CallingConventions\StdcallCallingConvention.cs" />
     <Compile Include="Assembly\CallingConventions\ThiscallCallingConvention.cs" />
     <Compile Include="Assembly\CallingConventions\Fastcall64CallingConvention.cs" />
     <Compile Include="Assembly\Enumerations.cs" />
-    <Compile Include="Assembly\ICallingConvention.cs" />
+    <Compile Include="Assembly\CallingConventions\ICallingConvention.cs" />
+    <Compile Include="Assembly\RemoteFunctionGenerator.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Internals\IMarshalledValue.cs" />
     <Compile Include="Internals\LocalUnmanagedMemory.cs" />
