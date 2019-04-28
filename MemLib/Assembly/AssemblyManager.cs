@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using MemLib.Internals;
 using MemLib.Memory;
-using MemLib.Threads;
 
 namespace MemLib.Assembly {
     public sealed class AssemblyManager : IDisposable {
@@ -39,13 +38,8 @@ namespace MemLib.Assembly {
             return Execute<IntPtr>(address);
         }
         
-        public T Execute<T>(IntPtr address, dynamic parameter) {
-            RemoteThread thread = m_Process.Threads.CreateAndJoin(address, parameter);
-            return thread.GetExitCode<T>();
-        }
-
-        public IntPtr Execute(IntPtr address, dynamic parameter) {
-            return Execute<IntPtr>(address, parameter);
+        public IntPtr Execute(IntPtr address, params dynamic[] parameters) {
+            return Execute<IntPtr>(address, CallingConvention.Default, parameters);
         }
 
         public T Execute<T>(IntPtr address, params dynamic[] parameters) {
@@ -87,14 +81,6 @@ namespace MemLib.Assembly {
             return ExecuteAsync<IntPtr>(address);
         }
         
-        public Task<T> ExecuteAsync<T>(IntPtr address, dynamic parameter) {
-            return Task.Run(() => (Task<T>) Execute<T>(address, parameter));
-        }
-        
-        public Task<IntPtr> ExecuteAsync(IntPtr address, dynamic parameter) {
-            return ExecuteAsync<IntPtr>(address, parameter);
-        }
-
         public Task<T> ExecuteAsync<T>(IntPtr address, params dynamic[] parameters) {
             return Task.Run(() => Execute<T>(address, CallingConvention.Default, parameters));
         }

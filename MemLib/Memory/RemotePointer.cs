@@ -91,14 +91,6 @@ namespace MemLib.Memory {
             return Execute<IntPtr>();
         }
         
-        public T Execute<T>(dynamic parameter) {
-            return m_Process.Assembly.Execute<T>(BaseAddress, parameter);
-        }
-        
-        public IntPtr Execute(dynamic parameter) {
-            return Execute<IntPtr>(parameter);
-        }
-
         public T Execute<T>(params dynamic[] parameters) {
             return m_Process.Assembly.Execute<T>(BaseAddress, CallingConvention.Default, parameters);
         }
@@ -127,14 +119,6 @@ namespace MemLib.Memory {
             return ExecuteAsync<IntPtr>();
         }
         
-        public Task<T> ExecuteAsync<T>(dynamic parameter) {
-            return m_Process.Assembly.ExecuteAsync<T>(BaseAddress, parameter);
-        }
-        
-        public Task<IntPtr> ExecuteAsync(dynamic parameter) {
-            return ExecuteAsync<IntPtr>(parameter);
-        }
-
         public Task<T> ExecuteAsync<T>(params dynamic[] parameters) {
             return m_Process.Assembly.ExecuteAsync<T>(BaseAddress, CallingConvention.Default, parameters);
         }
