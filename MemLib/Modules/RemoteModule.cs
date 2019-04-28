@@ -40,7 +40,7 @@ namespace MemLib.Modules {
             var tuple = Tuple.Create(functionName, m_Process.Handle);
             if (CachedFunctions.ContainsKey(tuple))
                 return CachedFunctions[tuple];
-            var function = Exports.FirstOrDefault(f => f.Name == functionName);
+            var function = Exports.FirstOrDefault(f => f.Name == functionName || f.UndecoratedName == functionName);
             if(function != null)
                 CachedFunctions.Add(tuple, function);
             return function;

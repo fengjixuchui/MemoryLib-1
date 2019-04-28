@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MemLib.Internals;
@@ -47,9 +48,16 @@ namespace MemLib.Assembly {
             return Execute<IntPtr>(address, parameter);
         }
 
+        public T Execute<T>(IntPtr address, params dynamic[] parameters) {
+            return Execute<T>(address, CallingConvention.Default, parameters);
+        }
+
         public T Execute<T>(IntPtr address, CallingConvention callingConvention, params dynamic[] parameters) {
             var marshalledParameters = parameters.Select(p => MarshalValue.Marshal(m_Process, p)).Cast<IMarshalledValue>().ToArray();
-            var calling = CallingConventionSelector.Get(m_Process.Is64Bit ? CallingConvention.FastCall64 : callingConvention);
+
+            var calling = callingConvention == CallingConvention.Default ?
+                CallingConventionSelector.Get(m_Process.Is64Bit ? CallingConvention.FastCall64 : CallingConvention.StdCall) :
+                CallingConventionSelector.Get(m_Process.Is64Bit ? CallingConvention.FastCall64 : callingConvention);
 
             AssemblyTransaction t;
             using (t = BeginTransaction()) {
@@ -87,8 +95,16 @@ namespace MemLib.Assembly {
             return ExecuteAsync<IntPtr>(address, parameter);
         }
 
+        public Task<T> ExecuteAsync<T>(IntPtr address, params dynamic[] parameters) {
+            return Task.Run(() => Execute<T>(address, CallingConvention.Default, parameters));
+        }
+
         public Task<T> ExecuteAsync<T>(IntPtr address, CallingConvention callingConvention, params dynamic[] parameters) {
             return Task.Run(() => Execute<T>(address, callingConvention, parameters));
+        }
+
+        public Task<IntPtr> ExecuteAsync(IntPtr address, params dynamic[] parameters) {
+            return ExecuteAsync<IntPtr>(address, CallingConvention.Default, parameters);
         }
 
         public Task<IntPtr> ExecuteAsync(IntPtr address, CallingConvention callingConvention, params dynamic[] parameters) {
@@ -105,13 +121,11 @@ namespace MemLib.Assembly {
                 throw new InvalidOperationException("The assembler returned nothing");
             m_Process.Write(address, data);
         }
-
-
-        public void Inject(string[] asm, IntPtr address) {
+        
+        public void Inject(IEnumerable<string> asm, IntPtr address) {
             Inject(string.Join("\n", asm), address);
         }
-
-
+        
         public RemoteAllocation Inject(string asm) {
             var code = Assembler.Assemble(asm);
             if (code == null)
@@ -121,9 +135,8 @@ namespace MemLib.Assembly {
 
             return memory;
         }
-
-
-        public RemoteAllocation Inject(string[] asm) {
+        
+        public RemoteAllocation Inject(IEnumerable<string> asm) {
             return Inject(string.Join("\n", asm));
         }
 
@@ -133,7 +146,6 @@ namespace MemLib.Assembly {
 
         public T InjectAndExecute<T>(string asm, IntPtr address) {
             Inject(asm, address);
-
             return Execute<T>(address);
         }
         
@@ -141,11 +153,11 @@ namespace MemLib.Assembly {
             return InjectAndExecute<IntPtr>(asm, address);
         }
         
-        public T InjectAndExecute<T>(string[] asm, IntPtr address) {
+        public T InjectAndExecute<T>(IEnumerable<string> asm, IntPtr address) {
             return InjectAndExecute<T>(string.Join("\n", asm), address);
         }
         
-        public IntPtr InjectAndExecute(string[] asm, IntPtr address) {
+        public IntPtr InjectAndExecute(IEnumerable<string> asm, IntPtr address) {
             return InjectAndExecute<IntPtr>(asm, address);
         }
         
@@ -159,11 +171,11 @@ namespace MemLib.Assembly {
             return InjectAndExecute<IntPtr>(asm);
         }
         
-        public T InjectAndExecute<T>(string[] asm) {
+        public T InjectAndExecute<T>(IEnumerable<string> asm) {
             return InjectAndExecute<T>(string.Join("\n", asm));
         }
 
-        public IntPtr InjectAndExecute(string[] asm) {
+        public IntPtr InjectAndExecute(IEnumerable<string> asm) {
             return InjectAndExecute<IntPtr>(asm);
         }
 
@@ -181,12 +193,12 @@ namespace MemLib.Assembly {
         }
 
 
-        public Task<T> InjectAndExecuteAsync<T>(string[] asm, IntPtr address) {
+        public Task<T> InjectAndExecuteAsync<T>(IEnumerable<string> asm, IntPtr address) {
             return Task.Run(() => InjectAndExecute<T>(asm, address));
         }
 
 
-        public Task<IntPtr> InjectAndExecuteAsync(string[] asm, IntPtr address) {
+        public Task<IntPtr> InjectAndExecuteAsync(IEnumerable<string> asm, IntPtr address) {
             return InjectAndExecuteAsync<IntPtr>(asm, address);
         }
 
@@ -201,12 +213,12 @@ namespace MemLib.Assembly {
         }
 
 
-        public Task<T> InjectAndExecuteAsync<T>(string[] asm) {
+        public Task<T> InjectAndExecuteAsync<T>(IEnumerable<string> asm) {
             return Task.Run(() => InjectAndExecute<T>(asm));
         }
 
 
-        public Task<IntPtr> InjectAndExecuteAsync(string[] asm) {
+        public Task<IntPtr> InjectAndExecuteAsync(IEnumerable<string> asm) {
             return InjectAndExecuteAsync<IntPtr>(asm);
         }
 

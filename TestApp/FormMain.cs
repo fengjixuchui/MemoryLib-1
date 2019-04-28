@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Windows.Forms;
 using MemLib;
+using MemLib.Assembly;
 
 namespace TestApp {
     public partial class FormMain : Form {
@@ -26,10 +27,11 @@ namespace TestApp {
             var proc = Process.GetCurrentProcess();
             //proc = Process.GetProcessesByName("sekiro").FirstOrDefault();
             //proc = Process.GetProcessesByName("notepad++").FirstOrDefault();
-            //proc = Process.GetProcessesByName("ReClass.NET").FirstOrDefault();
+            proc = Process.GetProcessesByName("ReClass.NET").FirstOrDefault();
             var swTotal = Stopwatch.StartNew();
-
             using (var mem = new RemoteProcess(proc)) {
+                var file = $"C:\\Test\\TestDLL{(mem.Is64Bit ? "64" : "32")}.dll";
+                var mod = mem.Modules.Inject(file, false);
             }
 
             swTotal.Stop();

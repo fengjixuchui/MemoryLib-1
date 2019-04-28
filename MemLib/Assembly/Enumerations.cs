@@ -12,6 +12,7 @@ namespace MemLib.Assembly {
     }
 
     public enum CallingConvention {
+        Default,
         Cdecl,
         StdCall,
         ThisCall,
