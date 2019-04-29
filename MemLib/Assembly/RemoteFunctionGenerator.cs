@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using MemLib.Assembly.CallingConventions;
@@ -17,25 +16,7 @@ namespace MemLib.Assembly {
             return (T)(object)FunctionForDelegate(typeof(T));
         }
 
-        //public T Execute<T>(IntPtr address, CallingConvention callingConvention, params dynamic[] parameters) {
-        //    var calling = callingConvention == CallingConvention.Default ?
-        //        CallingConventionSelector.Get(m_Process.Is64Bit ? CallingConvention.FastCall64 : CallingConvention.StdCall) :
-        //        CallingConventionSelector.Get(m_Process.Is64Bit ? CallingConvention.FastCall64 : callingConvention);
-
-        //    var marshalledParameters = parameters.Select(p => MarshalValue.Marshal(m_Process, p)).Cast<IMarshalledValue>().ToArray();
-
-        //    AssemblyTransaction asm;
-        //    using (asm = m_Process.Assembly.BeginTransaction()) {
-        //        asm.Append(calling.FormatCall(address, marshalledParameters.Select(p => p.Reference).ToArray()));
-        //    }
-
-        //    foreach (var parameter in marshalledParameters) {
-        //        parameter.Dispose();
-        //    }
-        //    return MarshalType<T>.PtrToObject(m_Process, asm.GetExitCode<IntPtr>());
-        //}
-
-        public T Execute<T>(IntPtr address, bool[] byRef, CallingConvention callingConvention, params dynamic[] parameters) {
+        public T Execute<T>(IntPtr address, CallingConvention callingConvention, params dynamic[] parameters) {
             var calling = callingConvention == CallingConvention.Default ?
                 CallingConventionSelector.Get(m_Process.Is64Bit ? CallingConvention.FastCall64 : CallingConvention.StdCall) :
                 CallingConventionSelector.Get(m_Process.Is64Bit ? CallingConvention.FastCall64 : callingConvention);
@@ -65,12 +46,9 @@ namespace MemLib.Assembly {
         }
         
         internal Delegate FunctionForDelegate(Type delegateType) {
-            //var sw = Stopwatch.StartNew();
-
             var invoke = delegateType.GetMethod("Invoke");
             if (invoke == null) return null;
-            var remoteFuncAttrib = delegateType.GetCustomAttributes(typeof(RemoteFunctionAttribute), false).FirstOrDefault() as RemoteFunctionAttribute;
-            if (remoteFuncAttrib == null) return null;
+            if (!(delegateType.GetCustomAttributes(typeof(RemoteFunctionAttribute), false).FirstOrDefault() is RemoteFunctionAttribute remoteFuncAttrib)) return null;
 
             var returnType = invoke.ReturnType;
 
@@ -91,9 +69,6 @@ namespace MemLib.Assembly {
                 functionAddress = remoteFuncAttrib.RemoteAddress;
             }
             
-            //sw.Stop();
-            //Console.WriteLine($"Init Time: {sw.Elapsed.TotalMilliseconds:N} ms");
-
             var parameterExpressions = invoke.GetParameters().Select(p => Expression.Parameter(p.ParameterType, p.Name)).ToArray();
             var isByRef = parameterExpressions.Select(p => p.IsByRef).ToArray();
             var hasByRef = isByRef.FirstOrDefault(r => r);
@@ -104,7 +79,6 @@ namespace MemLib.Assembly {
                     Expression.Constant(this),
                     execute,
                     Expression.Constant(functionAddress),
-                    Expression.Constant(isByRef),
                     Expression.Constant(callingConvention),
                     Expression.NewArrayInit(typeof(object),
                         parameterExpressions.Select(p => Expression.Convert(p, typeof(object))))
@@ -114,7 +88,6 @@ namespace MemLib.Assembly {
                     Expression.Constant(this),
                     execute,
                     Expression.Constant(functionAddress),
-                    Expression.Constant(isByRef),
                     Expression.Constant(callingConvention),
                     Expression.NewArrayInit(typeof(object),
                         parameterExpressions.Select(p => Expression.Convert(p, typeof(object))))

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -42,7 +43,7 @@ namespace MemLib {
         public RemoteModule this[string moduleName] => Modules[moduleName];
 
         public RemoteProcess() : this(Process.GetCurrentProcess()) { }
-        public RemoteProcess(string processName) : this(Utils.FindProcess(processName)) { }
+        public RemoteProcess(string processName) : this(FindProcess(processName)) { }
         public RemoteProcess(int processId) : this(Process.GetProcessById(processId)) { }
 
         [DebuggerStepThrough]
@@ -171,6 +172,12 @@ namespace MemLib {
         }
 
         #endregion
+
+        public static Process FindProcess(string processName) {
+            if (Path.HasExtension(processName))
+                processName = Path.GetFileNameWithoutExtension(processName);
+            return Process.GetProcessesByName(processName).FirstOrDefault();
+        }
 
         #region Equality members
 
