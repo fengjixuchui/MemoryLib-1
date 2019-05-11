@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace MemLib {
     public sealed class RuntimeCompiler : IDisposable {
-        private readonly CodeDomProvider m_CodeDom;
+        private CodeDomProvider m_CodeDom;
         private readonly string[] m_ReferencedAssemblies;
         private CompilerParameters m_Parameters;
         public CompilerParameters Parameters {
@@ -15,7 +15,8 @@ namespace MemLib {
             set => m_Parameters = value;
         }
         public bool DeleteOutputAssembly { get; set; } = true;
-        
+        public string Language { get; }
+
         public event EventHandler<IEnumerable<string>> OnError;
         public event EventHandler<IEnumerable<string>> OnWarning;
 
@@ -25,6 +26,7 @@ namespace MemLib {
             m_CodeDom = CodeDomProvider.CreateProvider("c#");
             var references = System.Reflection.Assembly.GetCallingAssembly().GetReferencedAssemblies();
             m_ReferencedAssemblies = references.Select(r => r.Name + ".dll").ToArray();
+            Language = "c#";
         }
 
         public RuntimeCompiler(string language) {
@@ -33,8 +35,15 @@ namespace MemLib {
             m_CodeDom = CodeDomProvider.CreateProvider(language);
             var references = System.Reflection.Assembly.GetCallingAssembly().GetReferencedAssemblies();
             m_ReferencedAssemblies = references.Select(r => r.Name + ".dll").ToArray();
+            Language = language;
         }
-        
+
+        public void Reset() {
+            Parameters = GetDefaultParameters();
+            m_CodeDom?.Dispose();
+            m_CodeDom = CodeDomProvider.CreateProvider(Language);
+        }
+
         public CompilerParameters GetDefaultParameters() {
             var param = new CompilerParameters {
                 GenerateExecutable = false,

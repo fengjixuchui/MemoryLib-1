@@ -8,7 +8,7 @@ namespace MemLib.Internals {
     [SuppressMessage("ReSharper", "StaticMemberInGenericType")]
     [SuppressMessage("ReSharper", "SwitchStatementMissingSomeCases")]
     [DebuggerStepThrough]
-    internal static class MarshalType<T> {
+    public static class MarshalType<T> {
         public static bool IsIntPtr { get; }
         public static Type RealType { get; }
         public static int Size { get; }

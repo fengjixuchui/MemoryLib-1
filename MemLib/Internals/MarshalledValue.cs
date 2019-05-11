@@ -2,19 +2,13 @@
 using MemLib.Memory;
 
 namespace MemLib.Internals {
-    internal static class MarshalValue {
+    public static class MarshalValue {
         public static MarshalledValue<T> Marshal<T>(RemoteProcess proc, T value, bool byRef = false) {
             return new MarshalledValue<T>(proc, value, byRef);
         }
-        public static T MarshalToManaged<T>(RemoteProcess proc, IntPtr address, T dummyValueForT) {
-            return MarshalType<T>.PtrToRefObject(proc, address);
-        }
-        public static void MarshalToManaged<T>(RemoteProcess proc, IntPtr address, ref T dummyValueForT) {
-            dummyValueForT = MarshalType<T>.PtrToRefObject(proc, address);
-        }
     }
 
-    internal sealed class MarshalledValue<T> : IMarshalledValue {
+    public sealed class MarshalledValue<T> : IMarshalledValue {
         private readonly RemoteProcess m_Process;
         public T Value { get; }
         public RemoteAllocation Allocated { get; private set; }
@@ -48,7 +42,11 @@ namespace MemLib.Internals {
                 }
             }
         }
-        
+
+        public T MarshalToManaged() {
+            return MarshalType<T>.PtrToRefObject(m_Process, Reference);
+        }
+
         #region IDisposable
 
         public void Dispose() {

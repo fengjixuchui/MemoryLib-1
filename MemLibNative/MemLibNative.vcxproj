@@ -105,6 +105,7 @@
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)libs\$(Configuration)$(PlatformArchitecture)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>keystone.lib;zydis.lib;kernel32.lib;user32.lib;shell32.lib</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -119,6 +120,7 @@
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)libs\$(Configuration)$(PlatformArchitecture)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>keystone.lib;zydis.lib;kernel32.lib;user32.lib;shell32.lib</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

@@ -17,7 +17,7 @@ namespace MemLib {
         public Process Native { get; }
         public SafeMemoryHandle Handle { get; }
         public IntPtr UnsafeHandle => Handle.DangerousGetHandle();
-
+        public string ProcessName => Native.ProcessName;
         public bool IsRunning => Native != null && !Native.HasExited && !Handle.IsClosed && !Handle.IsInvalid;
 
         private bool? m_Is64Bit;

@@ -76,13 +76,11 @@
     <Compile Include="Assembly\CallingConventions\Fastcall64CallingConvention.cs" />
     <Compile Include="Assembly\Enumerations.cs" />
     <Compile Include="Assembly\CallingConventions\ICallingConvention.cs" />
-    <Compile Include="Assembly\RemoteFunctionGenerator.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Internals\IMarshalledValue.cs" />
     <Compile Include="Internals\LocalUnmanagedMemory.cs" />
     <Compile Include="Internals\MarshalledValue.cs" />
     <Compile Include="Internals\MarshalType.cs" />
-    <Compile Include="Assembly\RemoteFunctionAttribute.cs" />
     <Compile Include="Internals\Singleton.cs" />
     <Compile Include="Memory\MemoryHelper.cs" />
     <Compile Include="Memory\MemoryManager.cs" />
