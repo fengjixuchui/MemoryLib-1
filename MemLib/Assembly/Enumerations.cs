@@ -1,14 +1,34 @@
 ﻿using System;
+using MemLibNative.Keystone;
+using MemLibNative.Zydis;
 
 namespace MemLib.Assembly {
     [Flags]
     public enum AssemblerSyntax {
-        Intel = 1, // X86 Intel syntax - default on X86
-        Att = 2, // X86 ATT asm syntax
-        Nasm = 4, // X86 Nasm syntax
-        //Masm = 8, // X86 Masm syntax - unsupported yet
-        Gas = 16, // X86 GNU GAS syntax
-        Radix16 = 32, // All immediates are in hex format (i.e 12 is 0x12)
+        Intel = KsSyntax.Intel,
+        Att = KsSyntax.Att,
+        Nasm = KsSyntax.Nasm,
+        //Masm = KsSyntax.Masm,
+        Gas = KsSyntax.Gas,
+        Radix16 = KsSyntax.Radix16,
+    }
+
+    public enum DisasmSyntax {
+        Att = ZydisasmStyle.Att,
+        Intel = ZydisasmStyle.Intel,
+        Masm = ZydisasmStyle.Masm
+    }
+
+    public enum DisasmMode {
+        Mode64 = ZydisasmMode.Mode64,
+        Mode32 = ZydisasmMode.Mode32,
+        Mode16 = ZydisasmMode.Mode16
+    }
+
+    public enum DisasmAddressWidth {
+        Width16 = ZydisasmAddressWidth.Width16,
+        Width32 = ZydisasmAddressWidth.Width32,
+        Width64 = ZydisasmAddressWidth.Width64
     }
 
     public enum CallingConvention {

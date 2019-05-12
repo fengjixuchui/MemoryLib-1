@@ -24,7 +24,7 @@ namespace MemLibNative {
 			Masm = ZYDIS_FORMATTER_STYLE_INTEL_MASM  //Ignores address
 		};
 		public value struct ZydisasmInstruction sealed {
-			array<Byte>^ Buffer;
+			int Offset;
 			String^ Instruction;
 			int Length;
 			long long Address;
@@ -101,7 +101,7 @@ namespace MemLibNative {
 					return insnlist;
 
 				ZyanU64 runtime_address = address;
-				ZyanUSize offset = 0;
+				auto offset = 0;
 				const ZyanUSize length = data->Length;
 				ZydisDecodedInstruction instruction;
 
@@ -116,9 +116,7 @@ namespace MemLibNative {
 						insn.Address = runtime_address;
 						insn.Length = instruction.length;
 						insn.Instruction = gcnew String(textbuffer);
-						insn.Buffer = gcnew array<Byte>(instruction.length);
-						pin_ptr<Byte> buf_tmp = &insn.Buffer[0];
-						memcpy_s(buf_tmp, instruction.length, buffer + offset, instruction.length);
+						insn.Offset = offset;
 						insnlist->Add(insn);
 					}
 					offset += instruction.length;
@@ -147,7 +145,7 @@ namespace MemLibNative {
 				auto insnlist = gcnew List<ZydisasmInstruction>();
 
 				ZyanU64 runtime_address = address;
-				ZyanUSize offset = 0;
+				auto offset = 0;
 				const ZyanUSize length = data->Length;
 				ZydisDecodedInstruction instruction;
 
@@ -162,9 +160,7 @@ namespace MemLibNative {
 						insn.Address = runtime_address;
 						insn.Length = instruction.length;
 						insn.Instruction = gcnew String(textbuffer);
-						insn.Buffer = gcnew array<Byte>(instruction.length);
-						pin_ptr<Byte> buf_tmp = &insn.Buffer[0];
-						memcpy_s(buf_tmp, instruction.length, buffer + offset, instruction.length);
+						insn.Offset = offset;
 						insnlist->Add(insn);
 					} else {
 						delete[] buffer;
@@ -198,8 +194,7 @@ namespace MemLibNative {
 								insn.Length = instruction.length;
 								insn.Address = address;
 								insn.Instruction = gcnew String(buffer);
-								insn.Buffer = gcnew array<Byte>(instruction.length);
-								Buffer::BlockCopy(data, 0, insn.Buffer, 0, instruction.length);
+								insn.Offset = 0;
 								return insn;
 							}
 						}
@@ -226,8 +221,7 @@ namespace MemLibNative {
 								insn.Length = zinstruction.length;
 								insn.Address = address;
 								insn.Instruction = gcnew String(buffer);
-								insn.Buffer = gcnew array<Byte>(zinstruction.length);
-								Buffer::BlockCopy(data, 0, insn.Buffer, 0, zinstruction.length);
+								insn.Offset = 0;
 								instruction = insn;
 								return true;
 							}
@@ -236,6 +230,33 @@ namespace MemLibNative {
 				}
 				return false;
 			}
+		
+			bool DisassembleLine(array<Byte>^ data, long long address, [Out] String^% instruction, [Out] int% length) {
+				const auto zydismode = static_cast<ZydisMachineMode>(m_Mode);
+				const auto zydiswidth = static_cast<ZydisAddressWidth>(m_AddressWidth);
+				const auto zydisstyle = static_cast<ZydisFormatterStyle>(m_Style);
+				
+				ZydisDecoder decoder;
+				if (ZYAN_SUCCESS(ZydisDecoderInit(&decoder, zydismode, zydiswidth))) {
+					ZydisDecodedInstruction zinstruction;
+					pin_ptr<unsigned char> p_data = &data[0];
+					if (ZYAN_SUCCESS(ZydisDecoderDecodeBuffer(&decoder, p_data, data->Length, &zinstruction))) {
+						ZydisFormatter formatter;
+						if (ZYAN_SUCCESS(ZydisFormatterInit(&formatter, zydisstyle))) {
+							char buffer[256];
+							if (ZYAN_SUCCESS(ZydisFormatterFormatInstruction(&formatter, &zinstruction, buffer, 256, address))) {
+								length = zinstruction.length;
+								instruction = gcnew String(buffer);
+								return true;
+							}
+						}
+					}
+				}
+				instruction = String::Empty;
+				length = -1;
+				return false;
+			}
+
 		};
 	}
 }

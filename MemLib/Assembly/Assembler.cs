@@ -18,7 +18,6 @@ namespace MemLib.Assembly {
         }
         
         public Assembler() : this(Environment.Is64BitProcess) { }
-
         public Assembler(bool use64Bit) {
             m_Keystone = new KeystoneEngine(use64Bit ? KsMode.Mode64 : KsMode.Mode32) {
                 Syntax = KsSyntax.Nasm

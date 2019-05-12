@@ -74,8 +74,10 @@
     <Compile Include="Assembly\CallingConventions\StdcallCallingConvention.cs" />
     <Compile Include="Assembly\CallingConventions\ThiscallCallingConvention.cs" />
     <Compile Include="Assembly\CallingConventions\Fastcall64CallingConvention.cs" />
+    <Compile Include="Assembly\Disassembler.cs" />
     <Compile Include="Assembly\Enumerations.cs" />
     <Compile Include="Assembly\CallingConventions\ICallingConvention.cs" />
+    <Compile Include="Assembly\InstructionData.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Internals\IMarshalledValue.cs" />
     <Compile Include="Internals\LocalUnmanagedMemory.cs" />

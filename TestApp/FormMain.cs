@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using MemLib;
-using MemLibNative.Zydis;
+using MemLib.Assembly;
 
 namespace TestApp {
     public partial class FormMain : Form {
@@ -47,6 +47,12 @@ namespace TestApp {
                 0xC3
             };
             using (var mem = new RemoteProcess(proc)) {
+                mem.Assembly.Disassembler.Syntax = DisasmSyntax.Att;
+                if (mem.Assembly.Disassembler.Disassemble(data, address, out var insns)) {
+                    foreach (var insn in insns) {
+                        Logging.Log(insn);
+                    }
+                }
             }
 
             swTotal.Stop();
