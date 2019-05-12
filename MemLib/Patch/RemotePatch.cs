@@ -17,7 +17,7 @@ namespace MemLib.Patch {
 
         public bool IsApplied {
             get {
-                var remote = m_Process.ReadBytes(PatchAddress, Size);
+                var remote = m_Process.Read<byte>(PatchAddress, Size);
                 return remote.SequenceEqual(NewBytes);
             }
         }
@@ -32,9 +32,9 @@ namespace MemLib.Patch {
 
         public void Apply() {
             if (IsApplied) return;
-            OldBytes = m_Process.ReadBytes(PatchAddress, NewBytes.Length);
+            OldBytes = m_Process.Read<byte>(PatchAddress, NewBytes.Length);
             using (new MemoryProtection(m_Process, PatchAddress, Size)) {
-                m_Process.WriteBytes(PatchAddress, NewBytes);
+                m_Process.Write(PatchAddress, NewBytes);
             }
         }
 
@@ -45,15 +45,15 @@ namespace MemLib.Patch {
         internal void InternalRemove() {
             if (!IsApplied) return;
             using (new MemoryProtection(m_Process, PatchAddress, Size)) {
-                m_Process.WriteBytes(PatchAddress, OldBytes);
+                m_Process.Write(PatchAddress, OldBytes);
             }
         }
 
         public void ChangePatchBytes(byte[] newBytes) {
             if (IsApplied) {
                 using (new MemoryProtection(m_Process, PatchAddress, Size)) {
-                    m_Process.WriteBytes(PatchAddress, OldBytes);
-                    m_Process.WriteBytes(PatchAddress, newBytes);
+                    m_Process.Write(PatchAddress, OldBytes);
+                    m_Process.Write(PatchAddress, newBytes);
                 }
             }
             NewBytes = newBytes;
@@ -89,7 +89,7 @@ namespace MemLib.Patch {
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == typeof(RemotePatch) && Equals((RemotePatch) obj);
+            return obj is RemotePatch patch && Equals(patch);
         }
 
         public override int GetHashCode() {

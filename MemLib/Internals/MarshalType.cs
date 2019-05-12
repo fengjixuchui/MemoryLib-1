@@ -38,8 +38,6 @@ namespace MemLib.Internals {
                 TypeCode == TypeCode.SByte;
         }
 
-        public static void OverrideSize(int size) => Size = size;
-
         [DebuggerStepThrough]
         public static byte[] ObjectToByteArray(T obj) {
             switch (TypeCode) {

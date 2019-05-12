@@ -45,15 +45,6 @@ namespace MemLib.Internals {
             }
         }
 
-        public T MarshalToManaged() {
-            if (typeof(T) == typeof(string)) {
-                Value = (T) (object) m_Process.ReadString(Reference);
-            } else {
-                Value = MarshalType<T>.PtrToObject(m_Process, Reference);
-            }
-            return Value;
-        }
-
         #region IDisposable
 
         public void Dispose() {

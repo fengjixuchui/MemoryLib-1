@@ -4,7 +4,7 @@ using System.Diagnostics;
 using MemLib.Internals;
 using MemLib.Native;
 
-namespace MemLib.Threads {
+namespace MemLib.Threading {
     [DebuggerStepThrough]
     public static class ThreadHelper {
         public static SafeMemoryHandle OpenThread(ThreadAccessFlags accessFlags, int threadId) {

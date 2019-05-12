@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using MemLib.Internals;
 using MemLib.Native;
 
-namespace MemLib.Threads {
+namespace MemLib.Threading {
     public sealed class RemoteThread : IDisposable, IEquatable<RemoteThread> {
         private readonly RemoteProcess m_Process;
-        private readonly IMarshalledValue _parameter;
-        private readonly Task _parameterCleaner;
+        private readonly IMarshalledValue m_Parameter;
+        private readonly Task m_ParameterCleaner;
 
         public ProcessThread Native { get; private set; }
         public SafeMemoryHandle Handle { get; }
         public int Id { get; }
-        public bool IsMainThread => this == m_Process.Threads.MainThread;
+        public bool IsMainThread => Equals(m_Process.Threads.MainThread);
         public bool IsAlive => !IsTerminated;
         public bool IsSuspended {
             get {
@@ -37,11 +37,12 @@ namespace MemLib.Threads {
             Handle = ThreadHelper.OpenThread(ThreadAccessFlags.AllAccess, thread.Id);
         }
 
+        [DebuggerStepThrough]
         internal RemoteThread(RemoteProcess process, ProcessThread thread, IMarshalledValue parameter = null) : this(process, thread) {
-            _parameter = parameter;
-            _parameterCleaner = new Task(() => {
+            m_Parameter = parameter;
+            m_ParameterCleaner = new Task(() => {
                 Join();
-                _parameter?.Dispose();
+                m_Parameter?.Dispose();
             });
         }
         
@@ -65,8 +66,8 @@ namespace MemLib.Threads {
         public void Resume() {
             if (!IsAlive) return;
             ThreadHelper.ResumeThread(Handle);
-            if(_parameter != null && !_parameterCleaner.IsCompleted)
-                _parameterCleaner.Start();
+            if(m_Parameter != null && !m_ParameterCleaner.IsCompleted)
+                m_ParameterCleaner.Start();
         }
 
         public FrozenThread Suspend() {
@@ -90,9 +91,9 @@ namespace MemLib.Threads {
         public void Dispose() {
             if (!Handle.IsClosed)
                 Handle.Close();
-            if (_parameter != null && m_Process.IsRunning) {
-                _parameterCleaner.Dispose();
-                _parameter.Dispose();
+            if (m_Parameter != null && m_Process.IsRunning) {
+                m_ParameterCleaner.Dispose();
+                m_Parameter.Dispose();
             }
             GC.SuppressFinalize(this);
         }

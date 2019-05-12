@@ -5,7 +5,7 @@ using System.Linq;
 using MemLib.Internals;
 using MemLib.Native;
 
-namespace MemLib.Threads {
+namespace MemLib.Threading {
     public sealed class ThreadManager : IDisposable {
         private readonly RemoteProcess m_Process;
 

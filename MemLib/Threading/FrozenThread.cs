@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MemLib.Threads {
+namespace MemLib.Threading {
     public sealed class FrozenThread : IDisposable {
         public RemoteThread Thread { get; }
 
