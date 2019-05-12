@@ -7,11 +7,10 @@ using System.Text;
 namespace MemLib.Internals {
     [SuppressMessage("ReSharper", "StaticMemberInGenericType")]
     [SuppressMessage("ReSharper", "SwitchStatementMissingSomeCases")]
-    [DebuggerStepThrough]
-    public static class MarshalType<T> {
+    internal static class MarshalType<T> {
         public static bool IsIntPtr { get; }
         public static Type RealType { get; }
-        public static int Size { get; }
+        public static int Size { get; private set; }
         public static TypeCode TypeCode { get; }
         public static bool CanBeStoredInRegisters { get; }
 
@@ -19,7 +18,10 @@ namespace MemLib.Internals {
             IsIntPtr = typeof(T) == typeof(IntPtr);
             RealType = typeof(T);
             TypeCode = Type.GetTypeCode(RealType);
-            Size = TypeCode == TypeCode.Boolean ? 1 : Marshal.SizeOf(RealType);
+            if (TypeCode == TypeCode.String)
+                Size = 0;
+            else Size = TypeCode == TypeCode.Boolean ? 1 : Marshal.SizeOf(RealType);
+            //Debug.WriteLine($"[MarshalType] {RealType} Size: {Size}");
 
             CanBeStoredInRegisters =
                 IsIntPtr ||
@@ -36,7 +38,9 @@ namespace MemLib.Internals {
                 TypeCode == TypeCode.SByte;
         }
 
+        public static void OverrideSize(int size) => Size = size;
 
+        [DebuggerStepThrough]
         public static byte[] ObjectToByteArray(T obj) {
             switch (TypeCode) {
                 case TypeCode.Object:
@@ -78,6 +82,7 @@ namespace MemLib.Internals {
             }
         }
 
+        [DebuggerStepThrough]
         public static T ByteArrayToObject(byte[] byteArray, int index = 0) {
             switch (TypeCode) {
                 case TypeCode.Object:
@@ -131,10 +136,6 @@ namespace MemLib.Internals {
             return ByteArrayToObject(CanBeStoredInRegisters
                 ? BitConverter.GetBytes(pointer.ToInt64())
                 : process.Read<byte>(pointer, Size));
-        }
-
-        public static T PtrToRefObject(RemoteProcess process, IntPtr pointer) {
-            return ByteArrayToObject(process.Read<byte>(pointer, Size));
         }
     }
 }

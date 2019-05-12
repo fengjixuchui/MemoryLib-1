@@ -23,8 +23,8 @@ namespace MemLib {
         private bool? m_Is64Bit;
         public bool Is64Bit {
             get {
-                if (!Environment.Is64BitOperatingSystem) return false;
                 if (m_Is64Bit.HasValue) return m_Is64Bit.Value;
+                if (!Environment.Is64BitOperatingSystem) return false;
                 return (bool) (m_Is64Bit = !(NativeMethods.IsWow64Process(Handle, out var wow64) && wow64));
             }
         }
@@ -56,7 +56,7 @@ namespace MemLib {
 
         [DebuggerStepThrough]
         public byte[] ReadBytes(IntPtr address, long count) {
-            var buffer = new byte[count];
+            var buffer = new byte[count < 0 ? 0 : count];
             if (!NativeMethods.ReadProcessMemory(Handle, address, buffer, buffer.Length, out _))
                 throw new Win32Exception(Marshal.GetLastWin32Error());
             return buffer;
@@ -76,7 +76,7 @@ namespace MemLib {
         }
 
         public bool Read<T>(IntPtr address, out T value) {
-            if (ReadBytes(address, out var buffer, Marshal.SizeOf<T>())) {
+            if (ReadBytes(address, out var buffer, MarshalType<T>.Size)) {
                 value = MarshalType<T>.ByteArrayToObject(buffer);
                 return true;
             }
@@ -93,7 +93,7 @@ namespace MemLib {
 
             if (ReadBytes(address, out var buffer, MarshalType<T>.Size * count)) {
                 value = new T[count];
-                if (typeof(T) != typeof(byte))
+                if (MarshalType<T>.TypeCode != TypeCode.Byte)
                     for (var i = 0; i < count; i++)
                         value[i] = MarshalType<T>.ByteArrayToObject(buffer, MarshalType<T>.Size * i);
                 else
@@ -110,7 +110,7 @@ namespace MemLib {
             var data = ReadBytes(address, MarshalType<T>.Size * count);
 
             var result = new T[count];
-            if (typeof(T) != typeof(byte))
+            if (MarshalType<T>.TypeCode != TypeCode.Byte)
                 for (var i = 0; i < count; i++)
                     result[i] = MarshalType<T>.ByteArrayToObject(data, MarshalType<T>.Size * i);
             else
@@ -132,8 +132,10 @@ namespace MemLib {
         public IntPtr ReadPointer(IntPtr address, params int[] offsets) {
             try {
                 if (offsets == null || offsets.Length == 0)
-                    return Read<IntPtr>(address);
-                return offsets.Aggregate(address, (current, offset) => Read<IntPtr>(current) + offset);
+                    return Is64Bit ? Read<IntPtr>(address) : (IntPtr)Read<int>(address);
+                if(Is64Bit)
+                    return offsets.Aggregate(address, (current, offset) => Read<IntPtr>(current) + offset);
+                return offsets.Aggregate(address, (current, offset) => (IntPtr) Read<int>(current) + offset);
             } catch {
                 return IntPtr.Zero;
             }

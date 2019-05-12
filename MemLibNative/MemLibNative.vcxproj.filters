@@ -26,19 +26,19 @@
     <ClCompile Include="src\AssemblyInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ZydisWrapper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Keystone\KeystoneEngine.cpp">
       <Filter>Source Files\Keystone</Filter>
     </ClCompile>
+    <ClCompile Include="src\Zydis\Zydisasm.cpp">
+      <Filter>Source Files\Zydis</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\ZydisWrapper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Keystone\KeystoneEngine.h">
       <Filter>Header Files\Keystone</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Zydis\Zydisasm.h">
+      <Filter>Header Files\Zydis</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

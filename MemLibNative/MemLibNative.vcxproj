@@ -157,11 +157,11 @@
   <ItemGroup>
     <ClCompile Include="src\AssemblyInfo.cpp" />
     <ClCompile Include="src\Keystone\KeystoneEngine.cpp" />
-    <ClCompile Include="src\ZydisWrapper.cpp" />
+    <ClCompile Include="src\Zydis\Zydisasm.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Keystone\KeystoneEngine.h" />
-    <ClInclude Include="src\ZydisWrapper.h" />
+    <ClInclude Include="src\Zydis\Zydisasm.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

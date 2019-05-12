@@ -8,19 +8,19 @@ using namespace Runtime::InteropServices;
 namespace MemLibNative {
 	namespace Keystone {
 		public enum class KsMode {
-			Mode16 = 2, // 16-bit mode
-			Mode32 = 4, // 32-bit mode
-			Mode64 = 8, // 64-bit mode
+			Mode16 = KS_MODE_16,
+			Mode32 = KS_MODE_32,
+			Mode64 = KS_MODE_64,
 		};
 
 		[Flags]
 		public enum class KsSyntax {
-			Intel = 1, // X86 Intel syntax - default on X86 (KS_OPT_SYNTAX).
-			Att = 2, // X86 ATT asm syntax (KS_OPT_SYNTAX).
-			Nasm = 4, // X86 Nasm syntax (KS_OPT_SYNTAX).
-			//Masm = 8, // X86 Masm syntax (KS_OPT_SYNTAX) - unsupported yet.
-			Gas = 16, // X86 GNU GAS syntax (KS_OPT_SYNTAX).
-			Radix16 = 32, // All immediates are in hex format (i.e 12 is 0x12)
+			Intel = KS_OPT_SYNTAX_INTEL,
+			Att = KS_OPT_SYNTAX_ATT,
+			Nasm = KS_OPT_SYNTAX_NASM,
+			//Masm = KS_OPT_SYNTAX_MASM, // X86 Masm syntax - unsupported yet.
+			Gas = KS_OPT_SYNTAX_GAS,
+			Radix16 = KS_OPT_SYNTAX_RADIX16,
 		};
 
 		public ref class KeystoneEngine sealed : IDisposable {
@@ -37,6 +37,7 @@ namespace MemLibNative {
 
 			!KeystoneEngine() { this->~KeystoneEngine(); }
 
+			#pragma warning(suppress: 26439)
 			virtual ~KeystoneEngine() {
 				if (!m_IsDisposed) {
 					m_IsDisposed = true;

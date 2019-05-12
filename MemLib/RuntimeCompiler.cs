@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace MemLib {
     public sealed class RuntimeCompiler : IDisposable {
+        private static readonly Random m_Rng = new Random();
         private CodeDomProvider m_CodeDom;
         private readonly string[] m_ReferencedAssemblies;
         private CompilerParameters m_Parameters;
@@ -19,7 +20,7 @@ namespace MemLib {
 
         public event EventHandler<IEnumerable<string>> OnError;
         public event EventHandler<IEnumerable<string>> OnWarning;
-
+        
         public RuntimeCompiler() {
             if (!CodeDomProvider.IsDefinedLanguage("c#"))
                 throw new ApplicationException("No CodeProvider for 'c#'");
@@ -63,7 +64,12 @@ namespace MemLib {
                     var fileName = match.Groups["ClassName"].Value + (Parameters.GenerateExecutable ? ".exe" : ".dll");
                     Parameters.OutputAssembly = Path.Combine(Directory.GetCurrentDirectory(), fileName);
                 } else {
-                    Parameters.OutputAssembly = Path.Combine(Directory.GetCurrentDirectory(), "TempAssembly_DeleteMe");
+                    string file;
+                    var ext = Parameters.GenerateExecutable ? ".exe" : ".dll";
+                    do {
+                        file = Path.Combine(Directory.GetCurrentDirectory(), $"{m_Rng.Next(100000, int.MaxValue - 1)}" + ext);
+                    } while (File.Exists(file));
+                    Parameters.OutputAssembly = file;
                 }
             }
 
