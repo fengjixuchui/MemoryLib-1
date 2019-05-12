@@ -10,6 +10,7 @@ using MemLib.Internals;
 using MemLib.Memory;
 using MemLib.Modules;
 using MemLib.Native;
+using MemLib.Patch;
 using MemLib.Threads;
 
 namespace MemLib {
@@ -37,6 +38,8 @@ namespace MemLib {
         public ThreadManager Threads => m_Threads ?? (m_Threads = new ThreadManager(this));
         private AssemblyManager m_Assembly;
         public AssemblyManager Assembly => m_Assembly ?? (m_Assembly = new AssemblyManager(this));
+        private PatchManager m_Patch;
+        public PatchManager Patch => m_Patch ?? (m_Patch = new PatchManager(this));
 
         public RemotePointer this[IntPtr address] => new RemotePointer(this, address);
         public RemotePointer this[long address] => new RemotePointer(this, new IntPtr(address));
@@ -215,6 +218,7 @@ namespace MemLib {
             ((IDisposable)m_Modules)?.Dispose();
             ((IDisposable)m_Threads)?.Dispose();
             ((IDisposable)m_Assembly)?.Dispose();
+            ((IDisposable)m_Patch)?.Dispose();
             if(Handle != null && !Handle.IsClosed)
                 Handle.Close();
             GC.SuppressFinalize(this);

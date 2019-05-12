@@ -100,6 +100,8 @@
     <Compile Include="Native\NativeMethods.cs" />
     <Compile Include="Native\SafeMemoryHandle.cs" />
     <Compile Include="Native\Structures.cs" />
+    <Compile Include="Patch\PatchManager.cs" />
+    <Compile Include="Patch\RemotePatch.cs" />
     <Compile Include="PeHeader\Enumerations.cs" />
     <Compile Include="PeHeader\ExportFunction.cs" />
     <Compile Include="PeHeader\PeHeaderParser.cs" />
