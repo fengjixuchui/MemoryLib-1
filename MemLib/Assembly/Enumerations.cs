@@ -1,6 +1,6 @@
 ﻿using System;
 using MemLibNative.Keystone;
-using MemLibNative.Zydis;
+using MemLibNative.Capstone;
 
 namespace MemLib.Assembly {
     [Flags]
@@ -14,23 +14,17 @@ namespace MemLib.Assembly {
     }
 
     public enum DisasmSyntax {
-        Att = ZydisasmStyle.Att,
-        Intel = ZydisasmStyle.Intel,
-        Masm = ZydisasmStyle.Masm
+        Intel = CapstoneSyntax.Intel,
+        Att = CapstoneSyntax.Att,
+        Masm = CapstoneSyntax.Masm
     }
 
     public enum DisasmMode {
-        Mode64 = ZydisasmMode.Mode64,
-        Mode32 = ZydisasmMode.Mode32,
-        Mode16 = ZydisasmMode.Mode16
+        Mode16 = CapstoneMode.Mode16,
+        Mode32 = CapstoneMode.Mode32,
+        Mode64 = CapstoneMode.Mode64
     }
-
-    public enum DisasmAddressWidth {
-        Width16 = ZydisasmAddressWidth.Width16,
-        Width32 = ZydisasmAddressWidth.Width32,
-        Width64 = ZydisasmAddressWidth.Width64
-    }
-
+    
     public enum CallingConvention {
         Default,
         Cdecl,

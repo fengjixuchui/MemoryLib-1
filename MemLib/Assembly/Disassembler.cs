@@ -1,32 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using MemLibNative.Zydis;
+using MemLibNative.Capstone;
 
 namespace MemLib.Assembly {
     public sealed class Disassembler : IDisposable {
-        private readonly Zydisasm m_Zydisasm;
+        private readonly CapstoneEngine m_Engine;
+        private bool m_IsDisposed;
 
         public DisasmSyntax Syntax {
-            get => (DisasmSyntax)m_Zydisasm.Style;
-            set => m_Zydisasm.Style = (ZydisasmStyle)value;
+            get => (DisasmSyntax)m_Engine.Syntax;
+            set => m_Engine.Syntax = (CapstoneSyntax)value;
         }
 
         public DisasmMode Mode {
-            get => (DisasmMode)m_Zydisasm.Mode;
-            set => m_Zydisasm.Mode = (ZydisasmMode)value;
+            get => (DisasmMode)m_Engine.Mode;
+            set => m_Engine.Mode = (CapstoneMode)value;
         }
-
-        public DisasmAddressWidth AddressWidth {
-            get => (DisasmAddressWidth)m_Zydisasm.AddressWidth;
-            set => m_Zydisasm.AddressWidth = (ZydisasmAddressWidth)value;
-        }
-
+        
         public Disassembler() : this(Environment.Is64BitProcess) { }
         public Disassembler(bool use64Bit) {
-            m_Zydisasm = new Zydisasm(use64Bit ? ZydisasmMode.Mode64 : ZydisasmMode.Mode32) {
-                Style = ZydisasmStyle.Intel
-            };
+            m_Engine = new CapstoneEngine(use64Bit ? CapstoneMode.Mode64 : CapstoneMode.Mode32);
         }
 
         #region Disassemble
@@ -54,17 +47,18 @@ namespace MemLib.Assembly {
         }
 
         public bool Disassemble(byte[] data, long address, out List<InstructionData> instructions) {
-            if (!m_Zydisasm.Disassemble(data, address, out var insnList)) {
+            if (!m_Engine.Disassemble(data, address, out var insnList)) {
                 instructions = null;
                 return false;
             }
             instructions = new List<InstructionData>(insnList.Count);
-            foreach (var instruction in insnList) {
+            foreach (var insn in insnList) {
                 instructions.Add(new InstructionData {
-                    Length = instruction.Length,
-                    Address = new IntPtr(instruction.Address),
-                    Instruction = instruction.Instruction,
-                    Data = data.Skip(instruction.Offset).Take(instruction.Length).ToArray()
+                    Size = (int)insn.Size,
+                    Address = new IntPtr(insn.Address),
+                    Mnemonic = insn.Mnemonic,
+                    OpString = insn.OpString,
+                    Bytes = insn.Bytes
                 });
             }
             return true;
@@ -72,41 +66,42 @@ namespace MemLib.Assembly {
 
         #endregion
 
-        #region DisassembleLine
+        #region DisassembleSingle
 
-        public InstructionData DisassembleLine(byte[] data) {
-            return DisassembleLine(data, 0);
+        public InstructionData DisassembleSingle(byte[] data) {
+            return DisassembleSingle(data, 0);
         }
 
-        public InstructionData DisassembleLine(byte[] data, IntPtr address) {
-            return DisassembleLine(data, address.ToInt64());
+        public InstructionData DisassembleSingle(byte[] data, IntPtr address) {
+            return DisassembleSingle(data, address.ToInt64());
         }
 
-        public InstructionData DisassembleLine(byte[] data, long address) {
-            if (DisassembleLine(data, address, out var instruction))
+        public InstructionData DisassembleSingle(byte[] data, long address) {
+            if (DisassembleSingle(data, address, out var instruction))
                 return instruction;
             return null;
         }
 
-        public bool DisassembleLine(byte[] data, out InstructionData instruction) {
-            return DisassembleLine(data, 0, out instruction);
+        public bool DisassembleSingle(byte[] data, out InstructionData instruction) {
+            return DisassembleSingle(data, 0, out instruction);
         }
 
-        public bool DisassembleLine(byte[] data, IntPtr address, out InstructionData instruction) {
-            return DisassembleLine(data, address.ToInt64(), out instruction);
+        public bool DisassembleSingle(byte[] data, IntPtr address, out InstructionData instruction) {
+            return DisassembleSingle(data, address.ToInt64(), out instruction);
         }
 
-        public bool DisassembleLine(byte[] data, long address, out InstructionData instruction) {
-            if (!m_Zydisasm.DisassembleLine(data, address, out var insn)) {
+        public bool DisassembleSingle(byte[] data, long address, out InstructionData instruction) {
+            if (!m_Engine.DisassembleSingle(data, address, out var insn)) {
                 instruction = null;
                 return false;
             }
 
             instruction = new InstructionData {
-                Length = insn.Length,
-                Address = new IntPtr(address),
-                Instruction = insn.Instruction,
-                Data = data.Take(insn.Length).ToArray()
+                Size = (int)insn.Size,
+                Address = new IntPtr(insn.Address),
+                Mnemonic = insn.Mnemonic,
+                OpString = insn.OpString,
+                Bytes = insn.Bytes
             };
             return true;
         }
@@ -116,6 +111,10 @@ namespace MemLib.Assembly {
         #region IDisposable
 
         void IDisposable.Dispose() {
+            if (!m_IsDisposed) {
+                m_IsDisposed = true;
+                m_Engine?.Dispose();
+            }
             GC.SuppressFinalize(this);
         }
 

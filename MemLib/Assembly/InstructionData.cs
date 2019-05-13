@@ -2,13 +2,16 @@
 
 namespace MemLib.Assembly {
     public class InstructionData {
-        public int Length;
+        public int Size;
         public IntPtr Address;
-        public string Instruction;
-        public byte[] Data;
+        public string Mnemonic;
+        public string OpString;
+        public byte[] Bytes;
+
+        public string Instruction => $"{Mnemonic} {OpString}";
 
         public override string ToString() {
-            return $"{Address.ToInt64():X8}: {Instruction}";
+            return $"{Address.ToInt64():X8}: {Mnemonic} {OpString}";
         }
     }
 }

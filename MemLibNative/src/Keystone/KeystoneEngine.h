@@ -18,7 +18,7 @@ namespace MemLibNative {
 			Intel = KS_OPT_SYNTAX_INTEL,
 			Att = KS_OPT_SYNTAX_ATT,
 			Nasm = KS_OPT_SYNTAX_NASM,
-			//Masm = KS_OPT_SYNTAX_MASM, // X86 Masm syntax - unsupported yet.
+			//Masm = KS_OPT_SYNTAX_MASM, // X86 Masm syntax - unsupported.
 			Gas = KS_OPT_SYNTAX_GAS,
 			Radix16 = KS_OPT_SYNTAX_RADIX16,
 		};
@@ -37,7 +37,7 @@ namespace MemLibNative {
 
 			!KeystoneEngine() { this->~KeystoneEngine(); }
 
-			#pragma warning(suppress: 26439)
+			#pragma warning(suppress: 26439) //declare function 'noexcept'
 			virtual ~KeystoneEngine() {
 				if (!m_IsDisposed) {
 					m_IsDisposed = true;

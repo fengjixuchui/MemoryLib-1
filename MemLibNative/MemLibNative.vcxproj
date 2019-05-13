@@ -104,8 +104,8 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)libs\$(Configuration)$(PlatformArchitecture)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>keystone.lib;zydis.lib;kernel32.lib;user32.lib;shell32.lib</AdditionalDependencies>
-      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>capstone.lib;keystone.lib;kernel32.lib;user32.lib;shell32.lib</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4099 /ignore:4075 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -119,8 +119,8 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)libs\$(Configuration)$(PlatformArchitecture)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>keystone.lib;zydis.lib;kernel32.lib;user32.lib;shell32.lib</AdditionalDependencies>
-      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>capstone.lib;keystone.lib;kernel32.lib;user32.lib;shell32.lib</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4099 /ignore:4075 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -133,7 +133,8 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)libs\$(Configuration)$(PlatformArchitecture)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>keystone.lib;zydis.lib;kernel32.lib;user32.lib;shell32.lib</AdditionalDependencies>
+      <AdditionalDependencies>capstone.lib;keystone.lib;kernel32.lib;user32.lib;shell32.lib</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4099 /ignore:4075 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -146,7 +147,8 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)libs\$(Configuration)$(PlatformArchitecture)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>keystone.lib;zydis.lib;kernel32.lib;user32.lib;shell32.lib</AdditionalDependencies>
+      <AdditionalDependencies>capstone.lib;keystone.lib;kernel32.lib;user32.lib;shell32.lib</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4099 /ignore:4075 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -156,12 +158,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AssemblyInfo.cpp" />
+    <ClCompile Include="src\Capstone\CapstoneEngine.cpp" />
     <ClCompile Include="src\Keystone\KeystoneEngine.cpp" />
-    <ClCompile Include="src\Zydis\Zydisasm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Capstone\CapstoneEngine.h" />
     <ClInclude Include="src\Keystone\KeystoneEngine.h" />
-    <ClInclude Include="src\Zydis\Zydisasm.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

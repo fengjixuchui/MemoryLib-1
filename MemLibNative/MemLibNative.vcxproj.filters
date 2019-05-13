@@ -15,11 +15,11 @@
     <Filter Include="Source Files\Keystone">
       <UniqueIdentifier>{a30c9e99-4c50-4e2a-afb0-5d914f468e28}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Zydis">
-      <UniqueIdentifier>{6040d0d9-537a-4ea1-88ab-c031de3422f2}</UniqueIdentifier>
+    <Filter Include="Source Files\Capstone">
+      <UniqueIdentifier>{a8b3a28e-7492-4c53-9a40-67fc9b59034f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Zydis">
-      <UniqueIdentifier>{ffccc4a6-b9fe-40a3-8c38-2742e843e747}</UniqueIdentifier>
+    <Filter Include="Header Files\Capstone">
+      <UniqueIdentifier>{aa68978f-e9a5-448a-b8ae-7623a63502ff}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -29,16 +29,16 @@
     <ClCompile Include="src\Keystone\KeystoneEngine.cpp">
       <Filter>Source Files\Keystone</Filter>
     </ClCompile>
-    <ClCompile Include="src\Zydis\Zydisasm.cpp">
-      <Filter>Source Files\Zydis</Filter>
+    <ClCompile Include="src\Capstone\CapstoneEngine.cpp">
+      <Filter>Source Files\Capstone</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Keystone\KeystoneEngine.h">
       <Filter>Header Files\Keystone</Filter>
     </ClInclude>
-    <ClInclude Include="src\Zydis\Zydisasm.h">
-      <Filter>Header Files\Zydis</Filter>
+    <ClInclude Include="src\Capstone\CapstoneEngine.h">
+      <Filter>Header Files\Capstone</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
