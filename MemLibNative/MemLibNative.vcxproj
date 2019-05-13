@@ -135,6 +135,7 @@
       <AdditionalLibraryDirectories>$(ProjectDir)libs\$(Configuration)$(PlatformArchitecture)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>capstone.lib;keystone.lib;kernel32.lib;user32.lib;shell32.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4099 /ignore:4075 %(AdditionalOptions)</AdditionalOptions>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -149,6 +150,7 @@
       <AdditionalLibraryDirectories>$(ProjectDir)libs\$(Configuration)$(PlatformArchitecture)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>capstone.lib;keystone.lib;kernel32.lib;user32.lib;shell32.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4099 /ignore:4075 %(AdditionalOptions)</AdditionalOptions>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

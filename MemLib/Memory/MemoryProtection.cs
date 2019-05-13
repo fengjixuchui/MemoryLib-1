@@ -28,8 +28,7 @@ namespace MemLib.Memory {
         #region IDisposable
 
         public void Dispose() {
-            if(!NativeMethods.VirtualProtectEx(m_Process.Handle, BaseAddress, Size, OldProtection, out _))
-                throw new Win32Exception(Marshal.GetLastWin32Error());
+            NativeMethods.VirtualProtectEx(m_Process.Handle, BaseAddress, Size, OldProtection, out _);
             GC.SuppressFinalize(this);
         }
 

@@ -116,7 +116,6 @@
     <Compile Include="PeHeader\Structures\ImageSectionHeaders.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteProcess.cs" />
-    <Compile Include="RuntimeCompiler.cs" />
     <Compile Include="Threading\FrozenThread.cs" />
     <Compile Include="Threading\RemoteThread.cs" />
     <Compile Include="Threading\ThreadHelper.cs" />
@@ -128,6 +127,8 @@
       <Name>MemLibNative</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Windows\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

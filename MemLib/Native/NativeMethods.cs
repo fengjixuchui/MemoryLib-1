@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 namespace MemLib.Native {
-    public static class NativeMethods {
+    internal static class NativeMethods {
         #region kernel32
 
         [DllImport("kernel32.dll", SetLastError = true)]

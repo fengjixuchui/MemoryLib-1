@@ -130,6 +130,7 @@ namespace MemLib.Native {
         NoThrowSignatures = 0x0100,
         NoMemberType = 0x0200,
         NoReturnUdtModel = 0x0400,
+        // ReSharper disable once InconsistentNaming
         _32BitDecode = 0x0800,
         NameOnly = 0x1000,
         NoArguments = 0x2000,

@@ -5,7 +5,6 @@ using MemLibNative.Capstone;
 namespace MemLib.Assembly {
     public sealed class Disassembler : IDisposable {
         private readonly CapstoneEngine m_Engine;
-        private bool m_IsDisposed;
 
         public DisasmSyntax Syntax {
             get => (DisasmSyntax)m_Engine.Syntax;
@@ -111,10 +110,7 @@ namespace MemLib.Assembly {
         #region IDisposable
 
         void IDisposable.Dispose() {
-            if (!m_IsDisposed) {
-                m_IsDisposed = true;
-                m_Engine?.Dispose();
-            }
+            m_Engine?.Dispose();
             GC.SuppressFinalize(this);
         }
 
