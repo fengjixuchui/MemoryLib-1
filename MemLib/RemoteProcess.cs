@@ -12,6 +12,7 @@ using MemLib.Modules;
 using MemLib.Native;
 using MemLib.Patch;
 using MemLib.Threading;
+using MemLib.Windows;
 
 namespace MemLib {
     public class RemoteProcess : IDisposable, IEquatable<RemoteProcess> {
@@ -40,6 +41,8 @@ namespace MemLib {
         public AssemblyManager Assembly => m_Assembly ?? (m_Assembly = new AssemblyManager(this));
         private PatchManager m_Patch;
         public PatchManager Patch => m_Patch ?? (m_Patch = new PatchManager(this));
+        private WindowManager m_Windows;
+        public WindowManager Windows => m_Windows ?? (m_Windows = new WindowManager(this));
 
         public RemotePointer this[IntPtr address] => new RemotePointer(this, address);
         public RemotePointer this[long address] => new RemotePointer(this, new IntPtr(address));
@@ -255,6 +258,7 @@ namespace MemLib {
             ((IDisposable)m_Threads)?.Dispose();
             ((IDisposable)m_Assembly)?.Dispose();
             ((IDisposable)m_Patch)?.Dispose();
+            ((IDisposable)m_Windows)?.Dispose();
             if(Handle != null && !Handle.IsClosed)
                 Handle.Close();
             GC.SuppressFinalize(this);

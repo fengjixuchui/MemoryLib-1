@@ -56,4 +56,95 @@ namespace MemLib.Native {
         public ushort ProcessorLevel;
         public ushort ProcessorRevision;
     }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Point {
+        public int X;
+        public int Y;
+
+        public override string ToString() {
+            return $"X = {X} Y = {Y}";
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Rectangle {
+        public int Left;
+        public int Top;
+        public int Right;
+        public int Bottom;
+        public int Height {
+            get => Bottom - Top;
+            set => Bottom = Top + value;
+        }
+        public int Width {
+            get => Right - Left;
+            set => Right = Left + value;
+        }
+
+        public override string ToString() {
+            return $"Left = {Left} Top = {Top} Height = {Height} Width = {Width}";
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct WindowPlacement {
+        public int Length;
+        public int Flags;
+        public WindowStates ShowCmd;
+        public Point MinPosition;
+        public Point MaxPosition;
+        public Rectangle NormalPosition;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FlashInfo {
+        public int Size;
+        public IntPtr Hwnd;
+        public FlashWindowFlags Flags;
+        public uint Count;
+        public int Timeout;
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    public struct Input {
+        public Input(InputTypes type) : this() {
+            Type = type;
+        }
+
+        [FieldOffset(0)]
+        public InputTypes Type;
+        [FieldOffset(sizeof (int))]
+        public MouseInput Mouse;
+        [FieldOffset(sizeof(int))]
+        public KeyboardInput Keyboard;
+        [FieldOffset(sizeof(int))]
+        public HardwareInput Hardware;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MouseInput {
+        public int DeltaX;
+        public int DeltaY;
+        public int MouseData;
+        public MouseFlags Flags;
+        public int Time;
+        public IntPtr ExtraInfo;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct KeyboardInput {
+        public Keys VirtualKey;
+        public short ScanCode;
+        public KeyboardFlags Flags;
+        public int Time;
+        public IntPtr ExtraInfo;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct HardwareInput {
+        public int Message;
+        public short WParamL;
+        public short WParamH;
+    }
 }

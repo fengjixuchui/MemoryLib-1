@@ -6,7 +6,7 @@ using MemLib.Native;
 
 namespace MemLib.Threading {
     [DebuggerStepThrough]
-    public static class ThreadHelper {
+    internal static class ThreadHelper {
         public static SafeMemoryHandle OpenThread(ThreadAccessFlags accessFlags, int threadId) {
             var handle = NativeMethods.OpenThread(accessFlags, false, threadId);
             if (handle.IsClosed || handle.IsInvalid)
@@ -21,13 +21,12 @@ namespace MemLib.Threading {
             return handle;
         }
 
-        private static IntPtr STILL_ACTIVE = new IntPtr(259);
+        private static readonly IntPtr STILL_ACTIVE = new IntPtr(259);
 
         public static IntPtr? GetExitCodeThread(SafeMemoryHandle threadHandle) {
             if (!NativeMethods.GetExitCodeThread(threadHandle, out var exitCode))
                 throw new Win32Exception();
 
-            //TODO use something else instead of GetExitCodeThread if possible because of this
             // If the thread is still active
             if (exitCode == STILL_ACTIVE && NativeMethods.WaitForSingleObject(threadHandle, 0) == WaitValues.Timeout)
                 return null;

@@ -120,6 +120,13 @@
     <Compile Include="Threading\RemoteThread.cs" />
     <Compile Include="Threading\ThreadHelper.cs" />
     <Compile Include="Threading\ThreadManager.cs" />
+    <Compile Include="Windows\Keyboard\BaseKeyboard.cs" />
+    <Compile Include="Windows\Keyboard\MessageKeyboard.cs" />
+    <Compile Include="Windows\Mouse\BaseMouse.cs" />
+    <Compile Include="Windows\Mouse\SendInputMouse.cs" />
+    <Compile Include="Windows\RemoteWindow.cs" />
+    <Compile Include="Windows\WindowHelper.cs" />
+    <Compile Include="Windows\WindowManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MemLibNative\MemLibNative.vcxproj">
@@ -127,8 +134,6 @@
       <Name>MemLibNative</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Windows\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

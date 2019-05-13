@@ -3,7 +3,7 @@ using System.Diagnostics;
 using MemLib.Internals;
 
 namespace MemLib.Assembly.CallingConventions {
-    public static class CallingConventionSelector {
+    internal static class CallingConventionSelector {
         [DebuggerStepThrough]
         public static ICallingConvention Get(CallingConvention callingConvention) {
             switch (callingConvention) {
