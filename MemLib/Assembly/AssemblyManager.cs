@@ -11,6 +11,8 @@ namespace MemLib.Assembly {
         private readonly RemoteProcess m_Process;
         private Assembler m_Assembler;
         public Assembler Assembler => m_Assembler ?? (m_Assembler = new Assembler(m_Process.Is64Bit));
+        private Disassembler m_Disassembler;
+        public Disassembler Disassembler => m_Disassembler ?? (m_Disassembler = new Disassembler(m_Process.Is64Bit));
 
         internal AssemblyManager(RemoteProcess process) {
             m_Process = process;
@@ -215,6 +217,7 @@ namespace MemLib.Assembly {
 
         void IDisposable.Dispose() {
             ((IDisposable)m_Assembler)?.Dispose();
+            ((IDisposable)m_Disassembler)?.Dispose();
             GC.SuppressFinalize(this);
         }
 

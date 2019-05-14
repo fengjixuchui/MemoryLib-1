@@ -10,7 +10,9 @@ using MemLib.Internals;
 using MemLib.Memory;
 using MemLib.Modules;
 using MemLib.Native;
-using MemLib.Threads;
+using MemLib.Patch;
+using MemLib.Threading;
+using MemLib.Windows;
 
 namespace MemLib {
     public class RemoteProcess : IDisposable, IEquatable<RemoteProcess> {
@@ -23,8 +25,8 @@ namespace MemLib {
         private bool? m_Is64Bit;
         public bool Is64Bit {
             get {
-                if (!Environment.Is64BitOperatingSystem) return false;
                 if (m_Is64Bit.HasValue) return m_Is64Bit.Value;
+                if (!Environment.Is64BitOperatingSystem) return false;
                 return (bool) (m_Is64Bit = !(NativeMethods.IsWow64Process(Handle, out var wow64) && wow64));
             }
         }
@@ -37,6 +39,10 @@ namespace MemLib {
         public ThreadManager Threads => m_Threads ?? (m_Threads = new ThreadManager(this));
         private AssemblyManager m_Assembly;
         public AssemblyManager Assembly => m_Assembly ?? (m_Assembly = new AssemblyManager(this));
+        private PatchManager m_Patch;
+        public PatchManager Patch => m_Patch ?? (m_Patch = new PatchManager(this));
+        private WindowManager m_Windows;
+        public WindowManager Windows => m_Windows ?? (m_Windows = new WindowManager(this));
 
         public RemotePointer this[IntPtr address] => new RemotePointer(this, address);
         public RemotePointer this[long address] => new RemotePointer(this, new IntPtr(address));
@@ -55,18 +61,14 @@ namespace MemLib {
         #region Read Memory
 
         [DebuggerStepThrough]
-        public byte[] ReadBytes(IntPtr address, long count) {
-            var buffer = new byte[count];
+        private byte[] ReadBytes(IntPtr address, long count) {
+            var buffer = new byte[count < 0 ? 0 : count];
             if (!NativeMethods.ReadProcessMemory(Handle, address, buffer, buffer.Length, out _))
                 throw new Win32Exception(Marshal.GetLastWin32Error());
             return buffer;
         }
 
-        public bool ReadBytes(IntPtr address, ref byte[] buffer) {
-            return buffer != null && NativeMethods.ReadProcessMemory(Handle, address, buffer, buffer.Length, out _);
-        }
-
-        public bool ReadBytes(IntPtr address, out byte[] buffer, long count) {
+        private bool ReadBytes(IntPtr address, out byte[] buffer, long count) {
             buffer = count <= 0 ? null : new byte[count];
             return buffer != null && NativeMethods.ReadProcessMemory(Handle, address, buffer, buffer.Length, out _);
         }
@@ -75,14 +77,22 @@ namespace MemLib {
             return MarshalType<T>.ByteArrayToObject(ReadBytes(address, MarshalType<T>.Size));
         }
 
+        public T Read<T>(Enum address) {
+            return Read<T>(new IntPtr(Convert.ToInt64(address)));
+        }
+
         public bool Read<T>(IntPtr address, out T value) {
-            if (ReadBytes(address, out var buffer, Marshal.SizeOf<T>())) {
+            if (ReadBytes(address, out var buffer, MarshalType<T>.Size)) {
                 value = MarshalType<T>.ByteArrayToObject(buffer);
                 return true;
             }
 
             value = default;
             return false;
+        }
+
+        public bool Read<T>(Enum address, out T value) {
+            return Read(new IntPtr(Convert.ToInt64(address)), out value);
         }
 
         public bool Read<T>(IntPtr address, out T[] value, int count) {
@@ -93,7 +103,7 @@ namespace MemLib {
 
             if (ReadBytes(address, out var buffer, MarshalType<T>.Size * count)) {
                 value = new T[count];
-                if (typeof(T) != typeof(byte))
+                if (MarshalType<T>.TypeCode != TypeCode.Byte)
                     for (var i = 0; i < count; i++)
                         value[i] = MarshalType<T>.ByteArrayToObject(buffer, MarshalType<T>.Size * i);
                 else
@@ -106,11 +116,15 @@ namespace MemLib {
             return false;
         }
 
+        public bool Read<T>(Enum address, out T[] value, int count) {
+            return Read(new IntPtr(Convert.ToInt64(address)), out value, count);
+        }
+
         public T[] Read<T>(IntPtr address, int count) {
             var data = ReadBytes(address, MarshalType<T>.Size * count);
 
             var result = new T[count];
-            if (typeof(T) != typeof(byte))
+            if (MarshalType<T>.TypeCode != TypeCode.Byte)
                 for (var i = 0; i < count; i++)
                     result[i] = MarshalType<T>.ByteArrayToObject(data, MarshalType<T>.Size * i);
             else
@@ -119,21 +133,35 @@ namespace MemLib {
             return result;
         }
 
+        public T[] Read<T>(Enum address, int count) {
+            return Read<T>(new IntPtr(Convert.ToInt64(address)), count);
+        }
+
         public string ReadString(IntPtr address, Encoding encoding, int maxLength = 512) {
             var data = encoding.GetString(ReadBytes(address, maxLength));
             var eosPos = data.IndexOf('\0');
             return eosPos == -1 ? data : data.Substring(0, eosPos);
         }
 
+        public string ReadString(Enum address, Encoding encoding, int maxLength = 512) {
+            return ReadString(new IntPtr(Convert.ToInt64(address)), encoding, maxLength);
+        }
+
         public string ReadString(IntPtr address, int maxLength = 512) {
             return ReadString(address, Encoding.UTF8, maxLength);
+        }
+
+        public string ReadString(Enum address, int maxLength = 512) {
+            return ReadString(new IntPtr(Convert.ToInt64(address)), Encoding.UTF8, maxLength);
         }
 
         public IntPtr ReadPointer(IntPtr address, params int[] offsets) {
             try {
                 if (offsets == null || offsets.Length == 0)
-                    return Read<IntPtr>(address);
-                return offsets.Aggregate(address, (current, offset) => Read<IntPtr>(current) + offset);
+                    return Is64Bit ? Read<IntPtr>(address) : (IntPtr)Read<int>(address);
+                if(Is64Bit)
+                    return offsets.Aggregate(address, (current, offset) => Read<IntPtr>(current) + offset);
+                return offsets.Aggregate(address, (current, offset) => (IntPtr) Read<int>(current) + offset);
             } catch {
                 return IntPtr.Zero;
             }
@@ -143,7 +171,7 @@ namespace MemLib {
 
         #region Write Memory
 
-        public bool WriteBytes(IntPtr address, byte[] buffer) {
+        private bool WriteBytes(IntPtr address, byte[] buffer) {
             bool result;
             using (new MemoryProtection(this, address, buffer.LongLength)) {
                 result = NativeMethods.WriteProcessMemory(Handle, address, buffer, buffer.Length, out _);
@@ -155,6 +183,10 @@ namespace MemLib {
             return WriteBytes(address, MarshalType<T>.ObjectToByteArray(value));
         }
 
+        public bool Write<T>(Enum address, T value) {
+            return Write(new IntPtr(Convert.ToInt64(address)), value);
+        }
+
         public bool Write<T>(IntPtr address, T[] array) {
             var size = MarshalType<T>.Size;
             var buffer = new byte[size * array.Length];
@@ -163,12 +195,24 @@ namespace MemLib {
             return WriteBytes(address, buffer);
         }
 
+        public bool Write<T>(Enum address, T[] array) {
+            return Write(new IntPtr(Convert.ToInt64(address)), array);
+        }
+
         public bool WriteString(IntPtr address, string text, Encoding encoding) {
             return WriteBytes(address, encoding.GetBytes(text + '\0'));
         }
 
         public bool WriteString(IntPtr address, string text) {
             return WriteString(address, text, Encoding.UTF8);
+        }
+
+        public bool WriteString(Enum address, string text, Encoding encoding) {
+            return WriteString(new IntPtr(Convert.ToInt64(address)), text, encoding);
+        }
+
+        public bool WriteString(Enum address, string text) {
+            return WriteString(new IntPtr(Convert.ToInt64(address)), text, Encoding.UTF8);
         }
 
         #endregion
@@ -213,6 +257,8 @@ namespace MemLib {
             ((IDisposable)m_Modules)?.Dispose();
             ((IDisposable)m_Threads)?.Dispose();
             ((IDisposable)m_Assembly)?.Dispose();
+            ((IDisposable)m_Patch)?.Dispose();
+            ((IDisposable)m_Windows)?.Dispose();
             if(Handle != null && !Handle.IsClosed)
                 Handle.Close();
             GC.SuppressFinalize(this);

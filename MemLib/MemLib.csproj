@@ -74,8 +74,10 @@
     <Compile Include="Assembly\CallingConventions\StdcallCallingConvention.cs" />
     <Compile Include="Assembly\CallingConventions\ThiscallCallingConvention.cs" />
     <Compile Include="Assembly\CallingConventions\Fastcall64CallingConvention.cs" />
+    <Compile Include="Assembly\Disassembler.cs" />
     <Compile Include="Assembly\Enumerations.cs" />
     <Compile Include="Assembly\CallingConventions\ICallingConvention.cs" />
+    <Compile Include="Assembly\InstructionData.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Internals\IMarshalledValue.cs" />
     <Compile Include="Internals\LocalUnmanagedMemory.cs" />
@@ -98,6 +100,8 @@
     <Compile Include="Native\NativeMethods.cs" />
     <Compile Include="Native\SafeMemoryHandle.cs" />
     <Compile Include="Native\Structures.cs" />
+    <Compile Include="Patch\PatchManager.cs" />
+    <Compile Include="Patch\RemotePatch.cs" />
     <Compile Include="PeHeader\Enumerations.cs" />
     <Compile Include="PeHeader\ExportFunction.cs" />
     <Compile Include="PeHeader\PeHeaderParser.cs" />
@@ -112,11 +116,17 @@
     <Compile Include="PeHeader\Structures\ImageSectionHeaders.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteProcess.cs" />
-    <Compile Include="RuntimeCompiler.cs" />
-    <Compile Include="Threads\FrozenThread.cs" />
-    <Compile Include="Threads\RemoteThread.cs" />
-    <Compile Include="Threads\ThreadHelper.cs" />
-    <Compile Include="Threads\ThreadManager.cs" />
+    <Compile Include="Threading\FrozenThread.cs" />
+    <Compile Include="Threading\RemoteThread.cs" />
+    <Compile Include="Threading\ThreadHelper.cs" />
+    <Compile Include="Threading\ThreadManager.cs" />
+    <Compile Include="Windows\Keyboard\BaseKeyboard.cs" />
+    <Compile Include="Windows\Keyboard\MessageKeyboard.cs" />
+    <Compile Include="Windows\Mouse\BaseMouse.cs" />
+    <Compile Include="Windows\Mouse\SendInputMouse.cs" />
+    <Compile Include="Windows\RemoteWindow.cs" />
+    <Compile Include="Windows\WindowHelper.cs" />
+    <Compile Include="Windows\WindowManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MemLibNative\MemLibNative.vcxproj">

@@ -7,7 +7,7 @@ using MemLib.Native;
 
 namespace MemLib.Modules {
     [DebuggerStepThrough]
-    public static class ModuleHelper {
+    internal static class ModuleHelper {
         public static string GetModuleFileName(SafeMemoryHandle hProcess, IntPtr hModule) {
             var sb = new StringBuilder(260);
             if (NativeMethods.GetModuleFileNameEx(hProcess, hModule, sb, sb.Capacity) != 0)

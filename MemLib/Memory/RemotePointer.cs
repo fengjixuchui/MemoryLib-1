@@ -22,21 +22,37 @@ namespace MemLib.Memory {
         }
         
         #region ReadMemory
+        
+        public T Read<T>() {
+            return Read<T>(0);
+        }
 
         public T Read<T>(int offset) {
             return m_Process.Read<T>(BaseAddress + offset);
         }
 
-        public T Read<T>() {
-            return Read<T>(0);
+        public T Read<T>(Enum offset) {
+            return Read<T>(Convert.ToInt32(offset));
         }
-
+        
         public T[] Read<T>(int offset, int count) {
             return m_Process.Read<T>(BaseAddress + offset, count);
         }
 
+        public T[] Read<T>(Enum offset, int count) {
+            return Read<T>(Convert.ToInt32(offset), count);
+        }
+
+        public string ReadString() {
+            return ReadString(0, Encoding.UTF8);
+        }
+
         public string ReadString(int offset, Encoding encoding, int maxLength = 512) {
             return m_Process.ReadString(BaseAddress + offset, encoding, maxLength);
+        }
+
+        public string ReadString(Enum offset, Encoding encoding, int maxLength = 512) {
+            return ReadString(Convert.ToInt32(offset), encoding, maxLength);
         }
 
         public string ReadString(Encoding encoding, int maxLength = 512) {
@@ -46,25 +62,41 @@ namespace MemLib.Memory {
         #endregion
 
         #region WriteMemory
+        
+        public void Write<T>(T value) {
+            Write(0, value);
+        }
 
         public void Write<T>(int offset, T value) {
             m_Process.Write(BaseAddress + offset, value);
         }
-
-        public void Write<T>(T value) {
-            Write(0, value);
+        
+        public void Write<T>(Enum offset, T value) {
+            Write(Convert.ToInt32(offset), value);
+        }
+        
+        public void Write<T>(T[] array) {
+            Write(0, array);
         }
 
         public void Write<T>(int offset, T[] array) {
             m_Process.Write(BaseAddress + offset, array);
         }
 
-        public void Write<T>(T[] array) {
-            Write(0, array);
+        public void Write<T>(Enum offset, T[] array) {
+            Write(Convert.ToInt32(offset), array);
+        }
+        
+        public void WriteString(string text) {
+            WriteString(0, text);
         }
 
         public void WriteString(int offset, string text, Encoding encoding) {
             m_Process.WriteString(BaseAddress + offset, text, encoding);
+        }
+
+        public void WriteString(Enum offset, string text, Encoding encoding) {
+            WriteString(Convert.ToInt32(offset), text, encoding);
         }
 
         public void WriteString(string text, Encoding encoding) {
@@ -74,9 +106,9 @@ namespace MemLib.Memory {
         public void WriteString(int offset, string text) {
             m_Process.WriteString(BaseAddress + offset, text);
         }
-
-        public void WriteString(string text) {
-            WriteString(0, text);
+        
+        public void WriteString(Enum offset, string text) {
+            WriteString(Convert.ToInt32(offset), text);
         }
 
         #endregion

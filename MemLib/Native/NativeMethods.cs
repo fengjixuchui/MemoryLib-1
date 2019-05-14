@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 namespace MemLib.Native {
-    public static class NativeMethods {
+    internal static class NativeMethods {
         #region kernel32
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -68,11 +68,71 @@ namespace MemLib.Native {
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool IsWow64Process2(SafeMemoryHandle hProcess, out ImageFileMachine pProcessMachine, out ImageFileMachine pNativeMachine);
 
-        [DllImport("kernel32.dll", SetLastError=false)]
+        [DllImport("kernel32.dll", SetLastError = false)]
         public static extern void GetNativeSystemInfo(out SystemInfo lpSystemInfo);
 
-        [DllImport("kernel32.dll", SetLastError=true)]
+        [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool FlushInstructionCache(SafeMemoryHandle hProcess, IntPtr lpBaseAddress, long dwSize);
+
+        #endregion
+
+        #region user32
+        
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool GetWindowPlacement(IntPtr hWnd, out WindowPlacement lpwndpl);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+        
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern int GetWindowTextLength(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
+
+        [DllImport("user32.dll")]
+        public static extern bool EnumChildWindows(IntPtr hwndParent, EnumWindowsProc lpEnumFunc, IntPtr lParam);
+        public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        public static extern bool FlashWindow(IntPtr hwnd, bool bInvert);
+
+        [DllImport("user32.dll")]
+        public static extern bool FlashWindowEx(ref FlashInfo pwfi);
+
+        [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool SetWindowPlacement(IntPtr hWnd, [In] ref WindowPlacement lpwndpl);
+        
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern bool SetWindowText(IntPtr hwnd, string lpString);
+
+        [DllImport("user32.dll")]
+        public static extern bool ShowWindow(IntPtr hWnd, WindowStates nCmdShow);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern int GetSystemMetrics(SystemMetrics metric);
+
+
+        [DllImport("user32.dll")]
+        public static extern uint MapVirtualKey(uint key, TranslationTypes translation);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool PostMessage(IntPtr hWnd, uint msg, UIntPtr wParam, UIntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern int SendInput(int nInputs, Input[] pInputs, int cbSize);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam);
 
         #endregion
 

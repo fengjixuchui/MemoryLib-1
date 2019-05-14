@@ -1,16 +1,30 @@
 ﻿using System;
+using MemLibNative.Keystone;
+using MemLibNative.Capstone;
 
 namespace MemLib.Assembly {
     [Flags]
     public enum AssemblerSyntax {
-        Intel = 1, // X86 Intel syntax - default on X86
-        Att = 2, // X86 ATT asm syntax
-        Nasm = 4, // X86 Nasm syntax
-        //Masm = 8, // X86 Masm syntax - unsupported yet
-        Gas = 16, // X86 GNU GAS syntax
-        Radix16 = 32, // All immediates are in hex format (i.e 12 is 0x12)
+        Intel = KsSyntax.Intel,
+        Att = KsSyntax.Att,
+        Nasm = KsSyntax.Nasm,
+        //Masm = KsSyntax.Masm,
+        Gas = KsSyntax.Gas,
+        Radix16 = KsSyntax.Radix16,
     }
 
+    public enum DisasmSyntax {
+        Intel = CapstoneSyntax.Intel,
+        Att = CapstoneSyntax.Att,
+        Masm = CapstoneSyntax.Masm
+    }
+
+    public enum DisasmMode {
+        Mode16 = CapstoneMode.Mode16,
+        Mode32 = CapstoneMode.Mode32,
+        Mode64 = CapstoneMode.Mode64
+    }
+    
     public enum CallingConvention {
         Default,
         Cdecl,

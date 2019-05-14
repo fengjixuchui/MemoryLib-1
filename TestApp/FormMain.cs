@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using MemLib;
+using MemLib.Windows;
 
 namespace TestApp {
     public partial class FormMain : Form {
